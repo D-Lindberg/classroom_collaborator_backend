@@ -13,15 +13,16 @@ from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
+        first_name = models.CharField(max_length=50, default = "first_name")
+        last_name = models.CharField(max_length=50, default = "last_name")
         college = models.CharField(max_length=50)
         username = models.OneToOneField(User, on_delete=models.CASCADE)
         profile_picture = models.ImageField()
         
         def __str__(self):
-            return self.username
-
-
-
+            return f'{self.first_name} {self.last_name}'
+                   
+                   
 class Professor(models.Model):
         first_name = models.CharField(max_length=50)
         last_name = models.CharField(max_length=50)
