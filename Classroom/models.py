@@ -1,34 +1,32 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
 
 
-# add a few more attributes to User Model
-
-# UserID pk
-# Username string
-# Password string
-# First_Name string
-# Last_Name string 
-# College string
 
 
+
+#This Profile class is how you can extend the built in django User class. Attributes can be accessed via 
+# >>> u = User.objects.get(username='fsmith')
+# >>> SmithsProfilePic = u.Profile.ProfPic
+
+class Profile(models.Model):
+        college = models.CharField(max_length=50)
+        user = models.OneToOneField(User, on_delete=models.CASCADE)
+        # https://www.geeksforgeeks.org/imagefield-django-models/ image field reference
+        ProfPic = models.ImageField()
 
 class Professor(models.Model):
         first_name = models.CharField(max_length=50)
         last_name = models.CharField(max_length=50)
-
+        
 class Section(models.Model):
         Section = models.CharField(max_length=255)
         Professor =models.ForeignKey(Professor, on_delete=models.CASCADE) 
         students = models.ManyToManyField(User)
-        
-
 
 class ClassMeeting(models.Model):
         class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
-
 
 class Note(models.Model):
         #Subject to Change due to hosting of Images of notes
@@ -44,10 +42,6 @@ class Comment(models.Model):
         #I think the below is how you create a self reference to another instance of the same class
         parent_comment = models.ForeignKey('self', on_delete=models.CASCADE)
 
-
-
-
-
 class Event(models.Model): 
         Event_Name = models.CharField(max_length=50)
         Event_Description = models.TextField(max_length=500)
@@ -55,20 +49,12 @@ class Event(models.Model):
         Event_Date = models.DateField()
         class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
-
 class Review(models.Model):
         student = models.ForeignKey(User, on_delete=models.CASCADE) 
 
         description = models.TextField(max_length=500)
 
-
 class Alert(models.Model):
-        #Are we relating alerts to Events? Unsure how to frame this
-        #Still need to add relations here
-        #Alert related to user
-
-        #Every User in a Section gets a many to many relation to an alert which is related to a single event
-
-
+        #Relations will be decided and added with the alerts User Story
         read_status = models.BooleanField()
         message = models.CharField(max_length=50)
