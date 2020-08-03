@@ -11,6 +11,8 @@ from django.contrib.auth.models import User
 # >>> SmithsProfilePic = u.Profile.ProfPic
 
 class Profile(models.Model):
+        first_name = models.CharField(max_length=50, default = "first name")
+        last_name = models.CharField(max_length=50, default = "last name")
         college = models.CharField(max_length=50)
         user = models.OneToOneField(User, on_delete=models.CASCADE)
         # https://www.geeksforgeeks.org/imagefield-django-models/ image field reference
@@ -19,7 +21,7 @@ class Profile(models.Model):
 class Professor(models.Model):
         first_name = models.CharField(max_length=50)
         last_name = models.CharField(max_length=50)
-        
+
 class Section(models.Model):
         Section = models.CharField(max_length=255)
         Professor =models.ForeignKey(Professor, on_delete=models.CASCADE) 
