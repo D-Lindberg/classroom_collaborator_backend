@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
+from .models import *
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -33,7 +34,60 @@ class UserSerializerWithToken(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('token', 'username', 'password', 'first_name','last_name', )
+        fields = ('token', 'username', 'password', 'first_name',
+                  'last_name', 'college', 'profile_picture')
+
+
+class ProfessorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Professor
+        fields = '__all__'
+
+
+class SectionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Section
+        fields = '__all__'
+
+
+class ClassMeetingSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = ClassMeeting
+        fields = '_all_'
+
+
+class NoteSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = '_all_'
+
+
+class CommentSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '_all_'
+
+
+class EventSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Event
+        fields = '_all_'
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    
+    
+    class Meta:
+        model  = Review
+        fields = '__all__'
         
         
+class AlertSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Alert
+        fields = '__all__'
     

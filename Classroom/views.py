@@ -3,11 +3,14 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from rest_framework import permissions, status
+from rest_framework import permissions, status , viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import UserSerializer, UserSerializerWithToken
+from rest_framework.parsers import MultiPartParser
+from .serializers  import *
+
 # Create your views here.
 
 
@@ -41,3 +44,10 @@ class UserList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    # do you need to specify a json response 
+    
+    
+    
+    class 
