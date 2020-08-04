@@ -4,6 +4,13 @@ from django.contrib.auth.models import User
 from .models import *
 
 
+class EventListSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'description', 'start', 'end', 'location', 'viewable')
+
+
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:

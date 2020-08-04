@@ -40,7 +40,14 @@ def current_user(request):
 
 
 
+class EventList(generics.ListCreateAPIView):
+    
+    # filter to first fake user until authentication is worked out
+    queryset = Event.objects.filter(user=User.objects.all()[0])
+    permission_classes = (permissions.AllowAny,)
 
+
+    serializer_class = EventListSerializer
  
 
 
