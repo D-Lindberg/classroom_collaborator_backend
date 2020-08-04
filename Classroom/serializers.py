@@ -34,47 +34,53 @@ class UserSerializerWithToken(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('token', 'username', 'password', 'first_name',
-                  'last_name', 'college', 'profile_picture')
+        fields = ('token', 'username',)
+        
+        
+        
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('__all__')
 
 
 class ProfessorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Professor
-        fields = '__all__'
+        fields = ('__all__',)
 
 
 class SectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Section
-        fields = '__all__'
+        fields = ('__all__',)
 
 
 class ClassMeetingSerializer (serializers.ModelSerializer):
     class Meta:
         model = ClassMeeting
-        fields = '_all_'
+        fields = ('__all__',)
 
 
 class NoteSerializer (serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields = '_all_'
+        fields =('__all__',)
 
 
 class CommentSerializer (serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = '_all_'
+        fields = ('__all__',)
 
 
 class EventSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Event
-        fields = '_all_'
+        fields = ('__all__',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -82,12 +88,12 @@ class ReviewSerializer(serializers.ModelSerializer):
     
     class Meta:
         model  = Review
-        fields = '__all__'
+        fields = ('__all__',)
         
         
 class AlertSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Alert
-        fields = '__all__'
+        fields =('__all__',)
     

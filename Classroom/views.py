@@ -10,8 +10,10 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer, UserSerializerWithToken
 from rest_framework.parsers import MultiPartParser
 from .serializers  import *
+from .models import *
 
-# Create your views here.
+
+
 
 
 def user_list(request):
@@ -46,8 +48,17 @@ class UserList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-    # do you need to specify a json response 
+   
+    
+    
+    class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+        queryset = get_user_model().objects.all()
+        serializer_class = ProfileSerializer
     
     
     
-    class 
+ 
+
+    
+    
+

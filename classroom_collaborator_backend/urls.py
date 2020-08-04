@@ -14,16 +14,26 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include 
+from django.urls import path, include
 from django.conf.urls.static import static
-from django.conf import settings 
+from django.conf import settings
 from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework.schemas import get_schema_view
+
+
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('Classroom.urls')),
-    path('token-auth/', obtain_jwt_token)
+    path('api/', include('rest_framework.urls')),
+    path('token-auth/', obtain_jwt_token),
+    path('openapi', get_schema_view(
+        title='classhub',
+        description="outline what endpoints are available",
+        version="1.0.0"
+    ), name='openapi-schema'),
+
+
 ]
 
 
