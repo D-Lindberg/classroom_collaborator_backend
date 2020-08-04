@@ -38,7 +38,7 @@ class UserSerializerWithToken(serializers.ModelSerializer):
         
         
         
-class ProfileSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('__all__')

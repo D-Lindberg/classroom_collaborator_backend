@@ -1,10 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from rest_framework import permissions, status , viewsets, generics
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,14 +19,15 @@ def user_list(request):
     users = User.objects.all()
     return HttpResponse(users)
 
+
+
+
 #Helper Function uses the information in the request to return information pertinent to the current user
-    def get_current_user(request):
-        serializer = UserSerializer(request.user)
-        current_user_username=serializer.data['username']
-        return User.objects.get(username=current_user_username)
 
-
-
+def get_current_user(request):
+    serializer = UserSerializer(request.user)
+    current_user_username=serializer.data['username']
+    return User.objects.get(username=current_user_username)
 
 
 @api_view(['GET'])
@@ -38,7 +37,11 @@ def current_user(request):
     """
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
-  
+
+
+
+
+ 
 
 
 class UserList(APIView):
