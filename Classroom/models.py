@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 
 
 
-
 #This Profile class is how you can extend the built in django User class. Attributes can be accessed via 
 # >>> u = User.objects.get(username='fsmith')
 # >>> SmithsProfilePic = u.Profile.ProfPic
@@ -32,12 +31,14 @@ class Professor(models.Model):
             return f'{self.first_name} {self.last_name}'
         
 class Section(models.Model):
-        Section = models.CharField(max_length=255)
-        Professor =models.ForeignKey(Professor, on_delete=models.CASCADE) 
-        students = models.ManyToManyField(User)
+
+        section_title = models.CharField(max_length=255)
+        Professor = models.ForeignKey(Professor, on_delete=models.CASCADE) 
+
+        User = models.ManyToManyField(User)
 
 class ClassMeeting(models.Model):
-    class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
+        class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
 class Note(models.Model):
         #Subject to Change due to hosting of Images of notes
@@ -61,9 +62,13 @@ class Event(models.Model):
         class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
 class Review(models.Model):
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
+        User = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    description = models.TextField(max_length=500)
+        class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
+
+        description = models.TextField(max_length=1000)
+
+        Professor =models.ForeignKey(Professor, on_delete=models.CASCADE) 
 
 class Alert(models.Model):
         #Relations will be decided and added with the alerts User Story

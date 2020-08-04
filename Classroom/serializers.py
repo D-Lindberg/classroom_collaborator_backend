@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 from .models import *
+from builtins import object
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -38,7 +39,7 @@ class UserSerializerWithToken(serializers.ModelSerializer):
         
         
         
-class UserProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('__all__')
@@ -83,12 +84,40 @@ class EventSerializer(serializers.ModelSerializer):
         fields = ('__all__',)
 
 
-class ReviewSerializer(serializers.ModelSerializer):
-    
-    
-    class Meta:
-        model  = Review
-        fields = ('__all__',)
+class ReviewSerializer(object):
+    def __init__(self, body):
+        self.body = body
+
+    @property
+    def all_reviews(self):
+        output = {'reviews': []}
+
+        for review in self.body:
+            review_detail = {
+                'student': review.User.username,
+                'section': review.class_section.section_title,
+                'description': review.description,
+                'Professor': review.Professor.last_name
+
+            }
+            output['reviews'].append(review_detail)
+
+        return output
+
+    @property
+    def review_detail(self):
+        output = {'review': []}
+
+        for review in self.body:
+                review_detail = {
+                'student': review.User,
+                'section': review.class_section,
+                'description': review.description,
+                'Professor': review.Professor.last_name
+            }
+                output['review'].append(review_detail)
+
+        return output
         
         
 class AlertSerializer(serializers.ModelSerializer):
