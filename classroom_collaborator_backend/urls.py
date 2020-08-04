@@ -25,8 +25,10 @@ from rest_framework.schemas import get_schema_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('rest_framework.urls')),
+    path('api/', include('Classroom.urls')),
     path('token-auth/', obtain_jwt_token),
+    
+    # api end point visual test
     path('openapi', get_schema_view(
         title='classhub',
         description="outline what endpoints are available",
