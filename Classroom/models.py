@@ -56,10 +56,10 @@ class Comment(models.Model):
 
 class Event(models.Model):
     title = models.CharField(max_length=50)
-    description = models.TextField(max_length=500)
+    description = models.TextField(max_length=500, blank=True, null=True)
     start = models.DateTimeField()
     end = models.DateTimeField()
-    location = models.CharField(max_length=100)
+    location = models.CharField(max_length=100, blank=True, null=True)
     viewable = models.BooleanField()
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='events', blank=True, null=True)
