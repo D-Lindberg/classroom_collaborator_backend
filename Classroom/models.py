@@ -9,26 +9,35 @@ from django.contrib.auth.models import User
 #This Profile class is how you can extend the built in django User class. Attributes can be accessed via 
 # >>> u = User.objects.get(username='fsmith')
 # >>> SmithsProfilePic = u.Profile.ProfPic
+# https://www.geeksforgeeks.org/imagefield-django-models/ image field reference
+
 
 class Profile(models.Model):
-        first_name = models.CharField(max_length=50, default = "first name")
-        last_name = models.CharField(max_length=50, default = "last name")
-        college = models.CharField(max_length=50)
-        user = models.OneToOneField(User, on_delete=models.CASCADE)
-        # https://www.geeksforgeeks.org/imagefield-django-models/ image field reference
-        ProfPic = models.ImageField()
 
+        first_name = models.CharField(max_length=50, default = "first_name")
+        last_name = models.CharField(max_length=50, default = "last_name")
+        college = models.CharField(max_length=50)
+        username = models.OneToOneField(User, on_delete=models.CASCADE)
+        profile_picture = models.ImageField()
+        
+        def __str__(self):
+            return f'{self.first_name} {self.last_name}'
+                   
+                   
 class Professor(models.Model):
         first_name = models.CharField(max_length=50)
         last_name = models.CharField(max_length=50)
-
+      
+        def __str__(self):
+            return f'{self.first_name} {self.last_name}'
+        
 class Section(models.Model):
         Section = models.CharField(max_length=255)
         Professor =models.ForeignKey(Professor, on_delete=models.CASCADE) 
         students = models.ManyToManyField(User)
 
 class ClassMeeting(models.Model):
-        class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
 class Note(models.Model):
         #Subject to Change due to hosting of Images of notes
@@ -52,9 +61,9 @@ class Event(models.Model):
         class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
 class Review(models.Model):
-        student = models.ForeignKey(User, on_delete=models.CASCADE) 
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
 
-        description = models.TextField(max_length=500)
+    description = models.TextField(max_length=500)
 
 class Alert(models.Model):
         #Relations will be decided and added with the alerts User Story
