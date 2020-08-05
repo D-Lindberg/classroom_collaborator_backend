@@ -27,6 +27,7 @@ class Professor(models.Model):
 
 
 class Section(models.Model):
+
     Section = models.CharField(max_length=255)
     Professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
     students = models.ManyToManyField(User)
@@ -66,10 +67,14 @@ class Event(models.Model):
 
 
 class Review(models.Model):
-        student = models.ForeignKey(User, on_delete=models.CASCADE)
 
-        description = models.TextField(max_length=500)
+        User = models.ForeignKey(User, on_delete=models.CASCADE)
 
+        class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
+
+        description = models.TextField(max_length=1000)
+
+        Professor =models.ForeignKey(Professor, on_delete=models.CASCADE) 
 
 class Alert(models.Model):
     # Relations will be decided and added with the alerts User Story

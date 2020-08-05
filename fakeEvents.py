@@ -1,4 +1,4 @@
-from Classroom.models import Event
+from Classroom.models import Event, Professor, Section, Review
 from django.contrib.auth.models import User
 from django.utils import timezone
 
@@ -10,6 +10,28 @@ u1.save()
 
 u2 = User(username='sarah')
 u2.save()
+
+p1 = Professor(first_name='Mr', last_name ="Professorson")
+p1.save()
+
+p2 = Professor(first_name='Mrs', last_name ="ProfessorWoman")
+p2.save()
+
+Sec1 = Section(Section="A1234", Professor = p2, )
+Sec1.save()
+Sec1.students.add(u1)
+Sec1.students.add(u2)
+Sec1.save()
+
+Rev1 = Review(User = u1, class_section=Sec1, description="I feel a deep hatred for mr professorson and for this class", Professor=p1)
+
+Rev2 = Review(User = u2, class_section=Sec1, description="I also feel a deep hatred for mr professorson and for his class", Professor=p1)
+
+Rev1.save()
+Rev2.save()
+
+
+
 
 e1 = Event(
     title='event1',
