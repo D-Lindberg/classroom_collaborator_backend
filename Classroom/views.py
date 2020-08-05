@@ -64,6 +64,8 @@ class UserList(APIView):
     
     
 class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UserSerializer 
+    
     def get(self, request, pk=None):
         user = request.user
         queryset = Profile.objects.filter(username_id=user.id)
@@ -89,7 +91,7 @@ class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
 #         # convert Serialized object to json
 
 
-#         return Response(serialized_recs)
+#         return Response(serializedrecs)_
 
 
 

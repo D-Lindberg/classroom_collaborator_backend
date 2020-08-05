@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'classroom_collaborator_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'nClassDB',
+        'NAME': 'ClassDB',
     }
 }
 
