@@ -68,7 +68,7 @@ class UserSerializerWithToken(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('__all__')
+        fields = ('first_name', 'last_name', 'username', 'college', 'profile_picture',)
 
 
 class ProfessorSerializer(serializers.ModelSerializer):
