@@ -1,4 +1,4 @@
-from Classroom.models import Event
+from Classroom.models import Event, Alert
 from django.contrib.auth.models import User
 from django.utils import timezone
 
@@ -32,3 +32,8 @@ e2 = Event(
     user=u1
     )
 e2.save()
+
+a1 = Alert(message='test', event=e1)
+a1.save()
+a2 = Alert(message='test', event=e2)
+a2.save()

@@ -76,8 +76,27 @@ class NewEvent(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
 
     def perform_create(self, serializer):
-        serializer.save(user=userFromId(
+        event = serializer.save(user=userFromId(
             serializer.initial_data['userID']))
+        alert = Alert(read_status=False, message='test', event=event)
+        alert.save()
+
+
+class AlertList(generics.ListCreateAPIView):
+    
+    # filter to first fake user until authentication is worked out
+    events = Event.objects.filter(user=User.objects.all()[0])
+    queryset = Alert.objects.filter(event__in=events).filter(read_status=False).order_by('event__start')
+    permission_classes = (permissions.AllowAny,)
+
+
+    serializer_class = AlertListSerializer
+
+class AlertDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Alert.objects.all()
+    serializer_class = AlertDetailSerializer
+    permission_classes = (permissions.AllowAny,)
+
 
 class UserList(APIView):
     """
