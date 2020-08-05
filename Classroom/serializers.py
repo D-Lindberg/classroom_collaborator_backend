@@ -5,6 +5,34 @@ from .models import *
 from builtins import object
 
 
+class EventListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'description', 'start',
+                  'end', 'location', 'viewable')
+
+
+class EventDetailSerializer(serializers.ModelSerializer):
+    # date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+    # category = CategoryField(read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'description', 'start',
+                  'end', 'location', 'viewable', 'user')
+
+
+class NewEventSerializer(serializers.ModelSerializer):
+    # date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+    # category = CategoryField(read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('title', 'description', 'start',
+                  'end', 'location', 'viewable', 'user')
+
+
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -36,13 +64,13 @@ class UserSerializerWithToken(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('token', 'username',)
-        
-        
-        
-class ProfileSerializer(serializers.ModelSerializer):
+
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('__all__')
+        fields = ('first_name', 'last_name', 'username', 'college', 'profile_picture',)
 
 
 class ProfessorSerializer(serializers.ModelSerializer):
@@ -68,7 +96,7 @@ class ClassMeetingSerializer (serializers.ModelSerializer):
 class NoteSerializer (serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields =('__all__',)
+        fields = ('__all__',)
 
 
 class CommentSerializer (serializers.ModelSerializer):
@@ -78,10 +106,11 @@ class CommentSerializer (serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Event
         fields = ('__all__',)
+
 
 
 class ReviewSerializer(object):
@@ -119,10 +148,8 @@ class ReviewSerializer(object):
 
         return output
         
-        
 class AlertSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Alert
-        fields =('__all__',)
-    
+        fields = ('__all__',)

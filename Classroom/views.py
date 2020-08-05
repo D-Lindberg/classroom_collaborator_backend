@@ -41,10 +41,45 @@ def current_user(request):
     return Response(serializer.data)
 
 
+def userFromId(userID):
+    return User.objects.get(id=userID)
 
+class EventList(generics.ListCreateAPIView):
+    
+    # filter to first fake user until authentication is worked out
+    queryset = Event.objects.filter(user=User.objects.all()[0])
+    permission_classes = (permissions.AllowAny,)
+
+
+    serializer_class = EventListSerializer
+
+
+class EventDetail(generics.RetrieveUpdateDestroyAPIView):
+    # filter to first fake user until authentication is worked out
+    queryset = Event.objects.filter(user=User.objects.all()[0])
+    serializer_class = EventDetailSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def perform_create(self, serializer):
+        serializer.save(category=userFromId(
+            serializer.initial_data['userID']))
+        serializer.save()
+
+    def perform_update(self, serializer):
+        serializer.save(category=userFromId(
+            serializer.initial_data['userID']))
+        serializer.save()
 
  
 
+class NewEvent(generics.CreateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = NewEventSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=userFromId(
+            serializer.initial_data['userID']))
 
 class UserList(APIView):
     """
@@ -65,16 +100,19 @@ class UserList(APIView):
 
     
     
-    # class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
-    #     queryset = Profile.objects.all()
-    #     serializer_class = ProfileSerializer
+class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UserSerializer 
     
-    
-    
-
-# Returns a Json Response of all Reviews associated with a User 
+    def get(self, request, pk=None):
+        user = request.user
+        queryset = Profile.objects.filter(username_id=user.id)
+        serializer = UserProfileSerializer(queryset, many=True)
+        return Response(data=serializer.data[0])
+        
+     
 @api_view(['GET'])
 def all_reviews_by_user(request):
+
     
         current_user_object = get_current_user(request)
 
@@ -87,6 +125,7 @@ def all_reviews_by_user(request):
         # convert Serialized object to json
 
         return Response(serialized_recs)
+
 
 
 @api_view(['GET'])
@@ -128,6 +167,7 @@ def new_review(request):
 
                 #this return is purely aesthetic. You can use the console-network-click the name of the request to see what the new review object looks like
                 return HttpResponse(new_review)
+
 
 
 

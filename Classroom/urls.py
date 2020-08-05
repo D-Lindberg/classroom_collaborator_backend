@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import current_user, UserList, all_reviews_by_user,all_reviews_by_professor
+from .views import current_user, UserList, all_reviews_by_user,all_reviews_by_professor, EventList, EventDetail, NewEvent,ProfileDetail
+
 
 urlpatterns = [
     path('current_user/', current_user),
@@ -7,7 +8,9 @@ urlpatterns = [
     path('reviews/<ProfID>', all_reviews_by_professor),
 
     path('users/', UserList.as_view()),
-    # path('profile/<int:pk>/', ProfileDetail.as_view()),
 
-
+    path('profile/', ProfileDetail.as_view()),
+    path('events/', EventList.as_view(), name='event_list'),
+    path('events/<int:pk>', EventDetail.as_view(), name='event_detail'),
+    path('events/new', NewEvent.as_view(), name='new_event'),
 ]
