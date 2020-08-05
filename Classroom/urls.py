@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import current_user, UserList
+from .views import current_user, UserList,ProfileDetail
 
 urlpatterns = [
     path('current_user/', current_user),
     path('users/', UserList.as_view()),
-    # path('profile/<int:pk>/', ProfileDetail.as_view()),
+    path('profile/', ProfileDetail.as_view()),
 
 
 ]

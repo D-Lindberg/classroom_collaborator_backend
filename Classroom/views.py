@@ -63,12 +63,16 @@ class UserList(APIView):
 
     
     
-    # class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
-    #     queryset = Profile.objects.all()
-    #     serializer_class = ProfileSerializer
+class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    def get(self, request, pk=None):
+        user = request.user
+        queryset = Profile.objects.filter(username_id=user.id)
+        serializer = UserProfileSerializer(queryset, many=True)
+        return Response(data=serializer.data[0])
+        
     
     
-    
+
 
 #Returns a Json Response of all Reviews associated with a User 
 # @api_view(['GET'])
