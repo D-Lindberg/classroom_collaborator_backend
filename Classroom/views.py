@@ -39,10 +39,45 @@ def current_user(request):
     return Response(serializer.data)
 
 
+def userFromId(userID):
+    return User.objects.get(id=userID)
 
+class EventList(generics.ListCreateAPIView):
+    
+    # filter to first fake user until authentication is worked out
+    queryset = Event.objects.filter(user=User.objects.all()[0])
+    permission_classes = (permissions.AllowAny,)
+
+
+    serializer_class = EventListSerializer
+
+
+class EventDetail(generics.RetrieveUpdateDestroyAPIView):
+    # filter to first fake user until authentication is worked out
+    queryset = Event.objects.filter(user=User.objects.all()[0])
+    serializer_class = EventDetailSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def perform_create(self, serializer):
+        serializer.save(category=userFromId(
+            serializer.initial_data['userID']))
+        serializer.save()
+
+    def perform_update(self, serializer):
+        serializer.save(category=userFromId(
+            serializer.initial_data['userID']))
+        serializer.save()
 
  
 
+class NewEvent(generics.CreateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = NewEventSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=userFromId(
+            serializer.initial_data['userID']))
 
 class UserList(APIView):
     """

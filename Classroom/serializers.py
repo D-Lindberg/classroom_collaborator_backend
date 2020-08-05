@@ -4,6 +4,34 @@ from django.contrib.auth.models import User
 from .models import *
 
 
+class EventListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'description', 'start',
+                  'end', 'location', 'viewable')
+
+
+class EventDetailSerializer(serializers.ModelSerializer):
+    # date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+    # category = CategoryField(read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'description', 'start',
+                  'end', 'location', 'viewable', 'user')
+
+
+class NewEventSerializer(serializers.ModelSerializer):
+    # date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+    # category = CategoryField(read_only=True)
+
+    class Meta:
+        model = Event
+        fields = ('title', 'description', 'start',
+                  'end', 'location', 'viewable', 'user')
+
+
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -35,9 +63,8 @@ class UserSerializerWithToken(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('token', 'username',)
-        
-        
-        
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
@@ -67,7 +94,7 @@ class ClassMeetingSerializer (serializers.ModelSerializer):
 class NoteSerializer (serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields =('__all__',)
+        fields = ('__all__',)
 
 
 class CommentSerializer (serializers.ModelSerializer):
@@ -77,23 +104,21 @@ class CommentSerializer (serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Event
         fields = ('__all__',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    
-    
+
     class Meta:
-        model  = Review
+        model = Review
         fields = ('__all__',)
-        
-        
+
+
 class AlertSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Alert
-        fields =('__all__',)
-    
+        fields = ('__all__',)
