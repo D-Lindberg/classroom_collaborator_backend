@@ -122,14 +122,13 @@ class ReviewSerializer(object):
         output = {'reviews': []}
 
         for review in self.body:
-            review_detail = {
+                review_detail = {
                 'student': review.User.username,
-                'section': review.class_section.section_title,
+                'section': review.class_section.Section,
                 'description': review.description,
                 'Professor': review.Professor.last_name
-
             }
-            output['reviews'].append(review_detail)
+                output['reviews'].append(review_detail)
 
         return output
 
@@ -140,7 +139,7 @@ class ReviewSerializer(object):
         for review in self.body:
                 review_detail = {
                 'student': review.User,
-                'section': review.class_section,
+                'section': review.class_section.Section,
                 'description': review.description,
                 'Professor': review.Professor.last_name
             }
