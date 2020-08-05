@@ -80,11 +80,37 @@ class ProfessorSerializer(serializers.ModelSerializer):
         fields = ('__all__',)
 
 
-class SectionSerializer(serializers.ModelSerializer):
+class SectionSerializer(object):
+    def __init__(self, body):
+        self.body = body
 
-    class Meta:
-        model = Section
-        fields = ('__all__',)
+    @property
+    def all_sections(self):
+        output = {'sections': []}
+
+        for section in self.body:
+                section_detail = {
+                'Section': section.Section,
+                'Professor': section.Professor.last_name,
+                # 'students': section.students.username,
+            }
+                output['sections'].append(section_detail)
+
+        return output
+
+    @property
+    def section_detail(self):
+        output = {'section': []}
+
+        for section in self.body:
+                section_detail = {
+                'Section': Section.Section,
+                'Professor': Section.Professor,
+                'students': Section.students,
+            }
+                output['section'].append(section_detail)
+
+        return output
 
 
 class ClassMeetingSerializer (serializers.ModelSerializer):
@@ -146,6 +172,9 @@ class ReviewSerializer(object):
                 output['review'].append(review_detail)
 
         return output
+
+
+
         
 class AlertSerializer(serializers.ModelSerializer):
 

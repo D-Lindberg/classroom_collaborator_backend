@@ -32,6 +32,7 @@ def get_current_user(request):
     return User.objects.get(username=current_user_username)
 
 
+
 @api_view(['GET'])
 def current_user(request):
     """
@@ -126,6 +127,16 @@ def all_reviews_by_user(request):
 
         return Response(serialized_recs)
 
+#Michael Needs this for review creation on the front end
+@api_view(['GET'])
+def get_sections_for_current_user(request):
+        current_user= get_current_user(request)
+        
+        my_class_sections = Section.objects.filter(students=current_user)
+        
+        serialized_sections = SectionSerializer(my_class_sections).all_sections
+        print(serialized_sections)
+        return Response(serialized_sections)
 
 
 @api_view(['GET'])
