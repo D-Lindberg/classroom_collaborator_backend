@@ -1,11 +1,14 @@
 from django.urls import path
-from .views import current_user, UserList, all_reviews_by_user,all_reviews_by_professor, EventList, EventDetail, NewEvent,ProfileDetail, AlertList, AlertDetail
+
+from .views import current_user, UserList, all_reviews_by_user,all_reviews_by_professor, EventList, EventDetail, NewEvent,ProfileDetail, AlertList, AlertDetail, get_sections_for_current_user
+
 
 urlpatterns = [
     path('current_user/', current_user),
     path('current_user/reviews/all', all_reviews_by_user),
+    path('current_user/sections/all', get_sections_for_current_user),
     path('reviews/<ProfID>', all_reviews_by_professor),
-
+    
     path('users/', UserList.as_view()),
 
     path('profile/', ProfileDetail.as_view()),
