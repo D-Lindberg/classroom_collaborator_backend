@@ -14,8 +14,6 @@ class EventListSerializer(serializers.ModelSerializer):
 
 
 class EventDetailSerializer(serializers.ModelSerializer):
-    # date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
-    # category = CategoryField(read_only=True)
 
     class Meta:
         model = Event
@@ -24,13 +22,33 @@ class EventDetailSerializer(serializers.ModelSerializer):
 
 
 class NewEventSerializer(serializers.ModelSerializer):
-    # date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
-    # category = CategoryField(read_only=True)
 
     class Meta:
         model = Event
         fields = ('title', 'description', 'start',
                   'end', 'location', 'viewable', 'user')
+
+
+class AlertListSerializer(serializers.ModelSerializer):
+    event_time = serializers.SerializerMethodField('get_event_start')
+    event_title = serializers.SerializerMethodField('get_event_title')
+
+    def get_event_start(self, obj):
+        return obj.event.start
+
+    def get_event_title(self, obj):
+        return obj.event.title
+
+    class Meta:
+        model = Alert
+        fields = ('id', 'read_status', 'message', 'event_time', 'event_title')
+
+
+class AlertDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Alert
+        fields = ('id', 'read_status')
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -77,6 +77,6 @@ class Review(models.Model):
         Professor =models.ForeignKey(Professor, on_delete=models.CASCADE) 
 
 class Alert(models.Model):
-    # Relations will be decided and added with the alerts User Story
-    read_status = models.BooleanField()
+    read_status = models.BooleanField(default=False)
     message = models.CharField(max_length=50)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='alert')
