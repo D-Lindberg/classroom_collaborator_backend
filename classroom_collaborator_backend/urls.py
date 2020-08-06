@@ -26,7 +26,8 @@ from rest_framework.schemas import get_schema_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('Classroom.urls')),
-    path('token-auth/', obtain_jwt_token),
+    # path('token-auth/', obtain_jwt_token),
+    path('auth/', include('rest_framework.urls')),
     
     # api end point visual test
     path('openapi', get_schema_view(

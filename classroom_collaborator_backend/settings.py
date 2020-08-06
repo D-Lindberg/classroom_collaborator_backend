@@ -16,7 +16,6 @@ import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = '#==zov$a%qpbt!n-$4(3evs=+!5m-&v90rgzsd6k+n3%x9$2@3'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -42,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #added
     'rest_framework',
+    'corsheaders'
     'corsheaders',
-  
 ]
 
 MIDDLEWARE = [
@@ -56,7 +54,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #added
-
 ]
 
 ROOT_URLCONF = 'classroom_collaborator_backend.urls'
@@ -79,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'classroom_collaborator_backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -90,24 +86,21 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
-}
+# Allows any client access.
+CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ORIGIN_REGEX_WHITELIST = (
-    'localhost:3001',
-)
+
+REST_FRAMEWORK = {                          
+    "DEFAULT_PERMISSION_CLASSES":
+        ["rest_framework.permissions.IsAuthenticated",],                        
+    "DEFAULT_PARSER_CLASSES":["rest_framework.parsers.JSONParser",],                    
+}
+ 
+
+CORS_ORIGIN_REGEX_WHITELIST = ('localhost:3001', )
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
@@ -118,30 +111,31 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:8080',
 ]
 
-
 JWT_AUTH = {
-    'JWT_RESPONSE_PAYLOAD_HANDLER': 'classroom_collaborator_backend.utils.my_jwt_response_handler',
+    'JWT_RESPONSE_PAYLOAD_HANDLER':
+    'classroom_collaborator_backend.utils.my_jwt_response_handler',
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
 
-
-
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -157,12 +151,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT =os.path.join(os.path.dirname(BASE_DIR),'media_root')
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media_root')
 
 MEDIA_URL = '/media/'
