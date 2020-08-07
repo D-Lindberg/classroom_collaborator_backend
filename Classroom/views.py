@@ -159,8 +159,17 @@ def get_sections_for_current_user(request):
 
 
 @api_view(['GET'])
+def all_sections(request):
+        
+        all_class_sections = Section.objects.all()
+        
+        serialized_sections = SectionSerializer(all_class_sections).all_sections
+        
+        return Response(serialized_sections)
+
+
+@api_view(['GET'])
 def add_current_user_to_section(request,SectionID):
-        print(SectionID)
         current_user_object = get_current_user(request)
         current_section_object = Section.objects.get(id=SectionID)
         #add the current sudent to the correct section
