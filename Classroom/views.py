@@ -150,14 +150,80 @@ class ProfileView(CreateAPIView):
 
 
 @api_view(['GET'])
-def all_reviews_by_user(request):
+def all_sections(request):
 
+    all_class_sections = Section.objects.all()
+
+    serialized_sections = SectionSerializer(all_class_sections).all_sections
+
+    return Response(serialized_sections)
+
+
+@api_view(['GET'])
+def add_current_user_to_section(request, SectionID):
     current_user_object = get_current_user(request)
+    current_section_object = Section.objects.get(id=SectionID)
+    #add the current sudent to the correct section
+    current_section_object.students.add(current_user_object)
 
+    return HttpResponse('Successfully added')
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def new_section(request):
+    #POST REQUEST FROM REACT
+    if request.method == "POST":
+
+        #request.data is a json object from which we can access information to build a new section object
+
+        section_title = request.data["Section"]
+
+        professor = request.data["ProfessorID"]
+        ProfessorObject = Professor.objects.get(id=professor)
+
+        #create the new review object which records it in the database
+        new_Section = Section.objects.create(Section=section_title,
+                                             Professor=ProfessorObject)
+
+        #Now add the current user to the class section
+        current_user_object = get_current_user(request)
+        new_Section.students.add(current_user_object)
+
+        #this return is purely aesthetic. You can use the console-network-click the name of the request to see what the new review object looks like
+        return HttpResponse(new_Section)
+
+
+@api_view(['GET'])
+def all_reviews_by_professor(request, ProfID):
+    reviewed_professor = Professor.objects.get(id=ProfID)
     #create a queryset of all reviews for the current user
-    all_reviews_by_user = Review.objects.filter(User=current_user_object)
+    all_reviews_by_professor = Review.objects.filter(
+        Professor=reviewed_professor)
+    print(all_reviews_by_professor)
 
     # #Serialize the queryset all_reviews
+    serialized_recs = ReviewSerializer(all_reviews_by_professor).all_reviews
+
+    # convert Serialized object to json
+
+    return Response(serialized_recs)
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def new_review(request):
+    #POST REQUEST FROM REACT
+    if request.method == "POST":
+        #current autheticated user helper function
+        current_user = get_current_user(request)
+
+        #section from the body? of the post request
+        sectionID = request.data["sectionID"]
+        #Use this info to get ahold of the section object
+        reviewed_section = Section.objects.get(id=sectionID)
+
+# #Serialize the queryset all_reviews
     serialized_recs = ReviewSerializer(all_reviews_by_user).all_reviews
 
     # convert Serialized object to json
