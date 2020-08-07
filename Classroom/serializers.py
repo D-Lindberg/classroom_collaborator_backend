@@ -6,27 +6,24 @@ from builtins import object
 
 
 class EventListSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'start',
-                  'end', 'location', 'viewable')
+        fields = ('id', 'title', 'description', 'start', 'end', 'location',
+                  'viewable')
 
 
 class EventDetailSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Event
-        fields = ('id', 'title', 'description', 'start',
-                  'end', 'location', 'viewable', 'user')
+        fields = ('id', 'title', 'description', 'start', 'end', 'location',
+                  'viewable', 'user')
 
 
 class NewEventSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Event
-        fields = ('title', 'description', 'start',
-                  'end', 'location', 'viewable', 'user')
+        fields = ('title', 'description', 'start', 'end', 'location',
+                  'viewable', 'user')
 
 
 class AlertListSerializer(serializers.ModelSerializer):
@@ -45,17 +42,15 @@ class AlertListSerializer(serializers.ModelSerializer):
 
 
 class AlertDetailSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Alert
         fields = ('id', 'read_status')
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
-        model = User
-        fields = ('username',)
+        model = Profile
+        fields = ('id', )
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):
@@ -80,22 +75,32 @@ class UserSerializerWithToken(serializers.ModelSerializer):
         return instance
 
     class Meta:
-        model = User
-        fields = ('token', 'username',)
+        extra_kwargs = {"password": {"write_only": True}}
 
+        model = User
+        fields = (
+            'token',
+            'username',
+            'password',
+        )
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('first_name', 'last_name', 'username', 'college', 'profile_picture',)
+        fields = (
+            'first_name',
+            'last_name',
+            'username',
+            'college',
+            'profile_picture',
+        )
 
 
 class ProfessorSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Professor
-        fields = ('__all__',)
+        fields = ('__all__', )
 
 
 class SectionSerializer(object):
@@ -107,12 +112,12 @@ class SectionSerializer(object):
         output = {'sections': []}
 
         for section in self.body:
-                section_detail = {
+            section_detail = {
                 'Section': section.Section,
                 'Professor': section.Professor.last_name,
                 # 'students': section.students.username,
             }
-                output['sections'].append(section_detail)
+            output['sections'].append(section_detail)
 
         return output
 
@@ -121,40 +126,38 @@ class SectionSerializer(object):
         output = {'section': []}
 
         for section in self.body:
-                section_detail = {
+            section_detail = {
                 'Section': Section.Section,
                 'Professor': Section.Professor,
                 'students': Section.students,
             }
-                output['section'].append(section_detail)
+            output['section'].append(section_detail)
 
         return output
 
 
-class ClassMeetingSerializer (serializers.ModelSerializer):
+class ClassMeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassMeeting
-        fields = ('__all__',)
+        fields = ('__all__', )
 
 
-class NoteSerializer (serializers.ModelSerializer):
+class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields = ('__all__',)
+        fields = ('__all__', )
 
 
-class CommentSerializer (serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('__all__',)
+        fields = ('__all__', )
 
 
 class EventSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Event
-        fields = ('__all__',)
-
+        fields = ('__all__', )
 
 
 class ReviewSerializer(object):
@@ -166,13 +169,13 @@ class ReviewSerializer(object):
         output = {'reviews': []}
 
         for review in self.body:
-                review_detail = {
+            review_detail = {
                 'student': review.User.username,
                 'section': review.class_section.Section,
                 'description': review.description,
                 'Professor': review.Professor.last_name
             }
-                output['reviews'].append(review_detail)
+            output['reviews'].append(review_detail)
 
         return output
 
@@ -181,21 +184,18 @@ class ReviewSerializer(object):
         output = {'review': []}
 
         for review in self.body:
-                review_detail = {
+            review_detail = {
                 'student': review.User,
                 'section': review.class_section.Section,
                 'description': review.description,
                 'Professor': review.Professor.last_name
             }
-                output['review'].append(review_detail)
+            output['review'].append(review_detail)
 
         return output
 
 
-
-        
 class AlertSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Alert
-        fields = ('__all__',)
+        fields = ('__all__', )
