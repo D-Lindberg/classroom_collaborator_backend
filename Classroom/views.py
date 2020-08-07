@@ -227,25 +227,25 @@ def all_reviews_by_professor(request, ProfID):
 
 
 @csrf_exempt
-@api_view(['GET', 'POST'])
+@api_view(['GET','POST'])
 def new_review(request):
-    #POST REQUEST FROM REACT
-    if request.method == "POST":
-        #current autheticated user helper function
-        current_user = get_current_user(request)
-
-        #section from the body? of the post request
-        sectionID = request.data["sectionID"]
-        #Use this info to get ahold of the section object
-        reviewed_section = Section.objects.get(id=sectionID)
-
-# #Serialize the queryset all_reviews
-    serialized_recs = ReviewSerializer(all_reviews_by_user).all_reviews
-
-    # convert Serialized object to json
-
-    return Response(serialized_recs)
-
+        #POST REQUEST FROM REACT
+        if request.method == "POST":
+                #current autheticated user helper function
+                current_user = get_current_user(request)
+                #section from the body? of the post request
+                sectionID = request.data["sectionID"]
+                #Use this info to get ahold of the section object
+                reviewed_section = Section.objects.get(id=sectionID)
+                #description from the body of the post request
+                description = request.data["description"]
+                #professor info through the same process as section
+                professor = request.data["ProfessorID"]
+                reviewed_professor = Professor.objects.get(id=professor)
+                #create the new review object which records it in the database
+                new_review = Review.objects.create( User=current_user,class_section=reviewed_section, description=description, Professor=reviewed_professor)
+                #this return is purely aesthetic. You can use the console-network-click the name of the request to see what the new review object looks like
+                return HttpResponse(new_review)
 
 #Michael Needs this for review creation on the front end
 @api_view(['GET'])
