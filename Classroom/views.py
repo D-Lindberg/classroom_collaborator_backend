@@ -150,6 +150,22 @@ class ProfileView(CreateAPIView):
 
 
 @api_view(['GET'])
+def all_reviews_by_user(request):
+
+    current_user_object = get_current_user(request)
+
+    #create a queryset of all reviews for the current user
+    all_reviews_by_user = Review.objects.filter(User=current_user_object)
+
+    # #Serialize the queryset all_reviews
+    serialized_recs = ReviewSerializer(all_reviews_by_user).all_reviews
+
+    # convert Serialized object to json
+
+    return Response(serialized_recs)
+
+
+@api_view(['GET'])
 def all_sections(request):
 
     all_class_sections = Section.objects.all()
