@@ -30,7 +30,7 @@ class Section(models.Model):
 
     Section = models.CharField(max_length=255)
     Professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
-    students = models.ManyToManyField(User)
+    students = models.ManyToManyField(User, related_name='sections')
 
 
 class ClassMeeting(models.Model):

@@ -49,7 +49,7 @@ def userFromId(userID):
 class EventList(generics.ListCreateAPIView):
     
     # filter to first fake user until authentication is worked out
-#     queryset = Event.objects.filter(user=User.objects.all()[0])
+    # queryset = Event.objects.filter(user=User.objects.all()[0])
     permission_classes = (permissions.AllowAny,)
 
 
@@ -89,8 +89,8 @@ class NewEvent(generics.CreateAPIView):
 class AlertList(generics.ListCreateAPIView):
     
     # filter to first fake user until authentication is worked out
-    # events = Event.objects.filter(user=User.objects.all()[0])
-    # queryset = Alert.objects.filter(event__in=events).filter(read_status=False).order_by('event__start')
+    events = Event.objects.filter(user=User.objects.all()[0])
+    queryset = Alert.objects.filter(event__in=events).filter(read_status=False).order_by('event__start')
     permission_classes = (permissions.AllowAny,)
 
 
@@ -212,3 +212,39 @@ class NewNotes(generics.CreateAPIView):
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = (permissions.AllowAny,)
     serializer_class = NoteSerializer
+
+
+class ProfessorList(generics.ListCreateAPIView):
+    queryset = Professor.objects.all()
+    serializer_class = ProfessorSerializer
+
+class NewProfessor(generics.CreateAPIView):
+    serializer_class = ProfessorSerializer
+
+class ProfessorList(generics.ListCreateAPIView):
+    queryset = Section.objects.all()
+    serializer_class = SectionSerializerDRF
+
+class NewSection(generics.CreateAPIView):
+    serializer_class = SectionSerializerDRF
+
+    # def post(self, request, format=None):
+    #     serializer = self.serializer_class(data=request.data)
+    #     serializer.is_valid()
+    #     print(serializer.data)
+
+
+class SectionStudents(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Section.objects.all()
+    serializer_class = SectionStudentSerializer
+
+    def perform_update(self, serializer):
+        section = serializer.instance
+        user = self.request.user
+        section.students.add(user)
+
+    def perform_destroy(self, serializer):
+        print(serializer)
+        section = serializer
+        user = self.request.user
+        section.students.remove(user)
