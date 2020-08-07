@@ -1,4 +1,4 @@
-from Classroom.models import Event, Professor, Section, Review, Alert
+from Classroom.models import Event, Professor, Section, Review, Alert, ClassMeeting
 from django.contrib.auth.models import User
 from django.utils import timezone
 
@@ -59,3 +59,6 @@ a1 = Alert(message='test', event=e1)
 a1.save()
 a2 = Alert(message='test', event=e2)
 a2.save()
+
+meeting = ClassMeeting(class_section=Sec1)
+meeting.save()

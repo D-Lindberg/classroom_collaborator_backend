@@ -55,7 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ('id', 'username',)
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):
@@ -140,7 +140,7 @@ class ClassMeetingSerializer (serializers.ModelSerializer):
 class NoteSerializer (serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields = ('__all__',)
+        fields = ('student', 'meeting', 'description', 'text', 'file')
 
 
 class CommentSerializer (serializers.ModelSerializer):

@@ -6,6 +6,7 @@ from rest_framework import permissions, status , viewsets, generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import UserSerializer, UserSerializerWithToken
 from rest_framework.parsers import MultiPartParser
 from .serializers  import *
@@ -88,8 +89,8 @@ class NewEvent(generics.CreateAPIView):
 class AlertList(generics.ListCreateAPIView):
     
     # filter to first fake user until authentication is worked out
-    events = Event.objects.filter(user=User.objects.all()[0])
-    queryset = Alert.objects.filter(event__in=events).filter(read_status=False).order_by('event__start')
+    # events = Event.objects.filter(user=User.objects.all()[0])
+    # queryset = Alert.objects.filter(event__in=events).filter(read_status=False).order_by('event__start')
     permission_classes = (permissions.AllowAny,)
 
 
@@ -115,6 +116,14 @@ class UserList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request, format=None):
+        """
+        Return a list of all users.
+        """
+        usernames = [user.username for user in User.objects.all()]
+        return Response(usernames)
+        
     
 
 
@@ -199,9 +208,7 @@ def new_review(request):
                 return HttpResponse(new_review)
 
 
-
-
-
-
-    
-
+class NewNotes(generics.CreateAPIView):
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = NoteSerializer

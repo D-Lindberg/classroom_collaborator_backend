@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import current_user, UserList, all_reviews_by_user,all_reviews_by_professor, EventList, EventDetail, NewEvent,ProfileDetail, AlertList, AlertDetail, get_sections_for_current_user
+from .views import current_user, UserList, all_reviews_by_user,all_reviews_by_professor, EventList, EventDetail, NewEvent,ProfileDetail, AlertList, AlertDetail, get_sections_for_current_user, NewNotes
 
 
 urlpatterns = [
@@ -17,5 +17,6 @@ urlpatterns = [
     path('events/new', NewEvent.as_view(), name='new_event'),
     path('alerts/', AlertList.as_view(), name='alert_list'),
     path('alerts/<int:pk>', AlertDetail.as_view(), name='alert_detail'),
+    path('notes/new', NewNotes.as_view(), name='new_notes'),
     # path('profile/<int:pk>/', ProfileDetail.as_view()),
 ]
