@@ -25,9 +25,9 @@ def user_list(request):
 
 def get_current_user(request):
     serializer = UserSerializer(request.user)
-    current_user_username = serializer.data['username']
-    print(User.objects.get(username=current_user_username))
-    return User.objects.get(username=current_user_username)
+    current_user_id = serializer.data['id']
+    print(User.objects.get(id=current_user_id))
+    return User.objects.get(id=current_user_id)
 
 
 @api_view(['POST'])
@@ -58,7 +58,7 @@ def userFromId(userID):
 class EventList(generics.ListCreateAPIView):
 
     # filter to first fake user until authentication is worked out
-    #     queryset = Event.objects.filter(user=User.objects.all()[0])
+    queryset = Event.objects.filter(user=User.objects.all()[0])
     permission_classes = (permissions.AllowAny, )
 
     serializer_class = EventListSerializer
@@ -66,7 +66,7 @@ class EventList(generics.ListCreateAPIView):
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     # filter to first fake user until authentication is worked out
-    #     queryset = Event.objects.filter(user=User.objects.all()[0])
+    queryset = Event.objects.filter(user=User.objects.all()[0])
     serializer_class = EventDetailSerializer
     permission_classes = (permissions.AllowAny, )
 
