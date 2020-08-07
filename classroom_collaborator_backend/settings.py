@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #added
     'rest_framework',
-    'corsheaders'
+    # 'corsheaders',
     'corsheaders',
 ]
 
@@ -92,13 +92,17 @@ DATABASES = {
 # Allows any client access.
 CORS_ORIGIN_ALLOW_ALL = True
 
-
-REST_FRAMEWORK = {                          
-    "DEFAULT_PERMISSION_CLASSES":
-        ["rest_framework.permissions.IsAuthenticated",],                        
-    "DEFAULT_PARSER_CLASSES":["rest_framework.parsers.JSONParser",],                    
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES':
+    ('rest_framework.permissions.IsAuthenticated', ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
 }
- 
+
+CORS_ORIGIN_WHITELIST = ('localhost:3000', )
 
 CORS_ORIGIN_REGEX_WHITELIST = ('localhost:3001', )
 

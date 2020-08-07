@@ -5,11 +5,13 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
 
     college = models.CharField(max_length=50)
-    student = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_picture = models.ImageField()
+    username = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    profile_picture = models.FileField()
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} {self.college}'
+        return f' {self.college}'
 
 
 class Professor(models.Model):
@@ -21,6 +23,7 @@ class Professor(models.Model):
 
 
 class Section(models.Model):
+
     Section = models.CharField(max_length=255)
     Professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
     students = models.ManyToManyField(User)
@@ -66,12 +69,19 @@ class Event(models.Model):
 
 
 class Review(models.Model):
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    description = models.TextField(max_length=500)
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
+
+    description = models.TextField(max_length=1000)
+
+    Professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
 
 
 class Alert(models.Model):
-    # Relations will be decided and added with the alerts User Story
-    read_status = models.BooleanField()
+    read_status = models.BooleanField(default=False)
     message = models.CharField(max_length=50)
+    event = models.ForeignKey(Event,
+                              on_delete=models.CASCADE,
+                              related_name='alert')
