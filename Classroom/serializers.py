@@ -113,6 +113,7 @@ class SectionSerializer(object):
 
         for section in self.body:
             section_detail = {
+                    'ID': section.id,
                 'Section': section.Section,
                 'Professor': section.Professor.last_name,
                 # 'students': section.students.username,
