@@ -113,30 +113,30 @@ class ProfileView(CreateAPIView):
     serializer_class = UserProfileSerializer
 
     parser_classes = (MultiPartParser, FormParser)
-    #permission_classes = (permissions.AllowAny,)
-    #serializer_class = NoteSerializer
+    permission_classes = (permissions.AllowAny, )
+    # serializer_class = NoteSerializer
 
-    #parser_class = (MultiPartParser, FormParser)
+    parser_class = (MultiPartParser, FormParser)
 
-    # def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
 
-    #     serializer = UserProfileSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #         return Response(serializer.errors,
-    #                         status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
-    # def get(self, request, *args, **kwargs):
-    #     user = request.user
-    #     queryset = Profile.objects.filter(username_id=user.id)
-    #     serializer = UserProfileSerializer(queryset, many=True)
-    #     if len(serializer.data) > 0:
-    #         data = serializer.data[0]
-    #     else:
-    #         data = []
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        queryset = Profile.objects.filter(username_id=user.id)
+        serializer = UserProfileSerializer(queryset, many=True)
+        if len(serializer.data) > 0:
+            data = serializer.data[0]
+        else:
+            data = []
 
-    #     return Response(data=data)
+        return Response(data=data)
 
 
 # class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
