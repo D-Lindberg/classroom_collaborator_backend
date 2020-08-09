@@ -13,6 +13,7 @@ from .serializers import *
 from .models import *
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from ipdb import launch_ipdb_on_exception
 
 
 def user_list(request):
@@ -210,20 +211,20 @@ def new_section(request):
         return HttpResponse(new_Section)
 
 
-@api_view(['GET'])
-def all_reviews_by_professor(request, ProfID):
-    reviewed_professor = Professor.objects.get(id=ProfID)
-    #create a queryset of all reviews for the current user
-    all_reviews_by_professor = Review.objects.filter(
-        Professor=reviewed_professor)
-    print(all_reviews_by_professor)
+# @api_view(['GET'])
+# def all_reviews_by_professor(request, ProfID):
+#     reviewed_professor = Professor.objects.get(id=ProfID)
+#     #create a queryset of all reviews for the current user
+#     all_reviews_by_professor = Review.objects.filter(
+#         Professor=reviewed_professor)
+#     print(all_reviews_by_professor)
 
-    # #Serialize the queryset all_reviews
-    serialized_recs = ReviewSerializer(all_reviews_by_professor).all_reviews
+#     # #Serialize the queryset all_reviews
+#     serialized_recs = ReviewSerializer(all_reviews_by_professor).all_reviews
 
-    # convert Serialized object to json
+#     # convert Serialized object to json
 
-    return Response(serialized_recs)
+#     return Response(serialized_recs)
 
 
 @csrf_exempt
@@ -256,9 +257,7 @@ def new_review(request):
 @api_view(['GET'])
 def get_sections_for_current_user(request):
     current_user = get_current_user(request)
-
     my_class_sections = Section.objects.filter(students=current_user)
-
     serialized_sections = SectionSerializer(my_class_sections).all_sections
     print(serialized_sections)
     return Response(serialized_sections)
@@ -280,25 +279,11 @@ def all_reviews_by_professor(request, ProfID):
     return Response(serialized_recs)
 
 
-# @csrf_exempt
-# @api_view(['GET', 'POST'])
-# def new_review(request):
-#     #POST REQUEST FROM REACT
-#     if request.method == "POST":
-#         #current autheticated user helper function
-#         current_user = get_current_user(request)
-
-#         #section from the body? of the post request
-#         sectionID = request.data["sectionID"]
-#         #Use this info to get ahold of the section object
-#         reviewed_section = Section.objects.get(id=sectionID)
-
 @api_view(['GET'])
-def get_professor(professor):
-        ProfessorObject = Professor.objects.get(id=professor)
-        
-        
-        serialized_Professor = ProfessorSerializer()
+def get_professor(request, ProfID):
+        ProfessorObject = Professor.objects.filter(id=ProfID)
+        print(ProfessorObject)
+        serialized_Professor = ProfessorSerializer(ProfessorObject).prof_detail
         print(serialized_Professor)
         return Response(serialized_Professor)
                 

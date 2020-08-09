@@ -97,10 +97,24 @@ class UserProfileSerializer(serializers.ModelSerializer):
         )
 
 
-class ProfessorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Professor
-        fields = ('__all__', )
+class ProfessorSerializer(object):
+    def __init__(self, body):
+        self.body = body
+
+
+    @property
+    def prof_detail(self):
+        output = {'Professor': []}
+
+        for Professor in self.body:
+            prof_detail = {
+                'first_name': Professor.first_name,
+                'Last_name': Professor.last_name,
+            
+            }
+            output['Professor'].append(prof_detail)
+
+        return output
 
 
 class SectionSerializer(object):
