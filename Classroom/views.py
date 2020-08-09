@@ -219,6 +219,19 @@ def new_review(request):
 
 
 
+@api_view(['GET'])
+def get_professor(professor):
+        ProfessorObject = Professor.objects.get(id=professor)
+        
+        my_class_sections = Section.objects.filter(students=current_user)
+        
+        serialized_sections = SectionSerializer(my_class_sections).all_sections
+        print(serialized_sections)
+        return Response(serialized_sections)
+                
+
+
+
 
 
     
