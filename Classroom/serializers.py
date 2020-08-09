@@ -5,50 +5,6 @@ from .models import *
 from builtins import object
 
 
-class EventListSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Event
-        fields = ('id', 'title', 'description', 'start',
-                  'end', 'location', 'viewable')
-
-
-class EventDetailSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Event
-        fields = ('id', 'title', 'description', 'start',
-                  'end', 'location', 'viewable', 'user')
-
-
-class NewEventSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Event
-        fields = ('title', 'description', 'start',
-                  'end', 'location', 'viewable', 'user')
-
-
-class AlertListSerializer(serializers.ModelSerializer):
-    event_time = serializers.SerializerMethodField('get_event_start')
-    event_title = serializers.SerializerMethodField('get_event_title')
-
-    def get_event_start(self, obj):
-        return obj.event.start
-
-    def get_event_title(self, obj):
-        return obj.event.title
-
-    class Meta:
-        model = Alert
-        fields = ('id', 'read_status', 'message', 'event_time', 'event_title')
-
-
-class AlertDetailSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Alert
-        fields = ('id', 'read_status')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -91,21 +47,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ('first_name', 'last_name', 'username', 'college', 'profile_picture',)
 
 
-class ProfessorSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Professor
-        fields = ('id', 'first_name', 'last_name')
-
-class SectionSerializerDRF(serializers.ModelSerializer):
-    class Meta:
-        model = Section
-        fields = ('id', 'Section', 'Professor')
-
-class SectionStudentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Section
-        fields = ('id', 'students')
 
 class SectionSerializer(object):
     def __init__(self, body):
@@ -147,10 +88,7 @@ class ClassMeetingSerializer (serializers.ModelSerializer):
         fields = ('__all__',)
 
 
-class NoteSerializer (serializers.ModelSerializer):
-    class Meta:
-        model = Note
-        fields = ('student', 'meeting', 'description', 'text', 'file')
+
 
 
 class CommentSerializer (serializers.ModelSerializer):
@@ -204,3 +142,82 @@ class ReviewSerializer(object):
 
 
         
+
+class EventListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'description', 'start',
+                  'end', 'location', 'viewable')
+
+
+class EventDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'description', 'start',
+                  'end', 'location', 'viewable', 'user')
+
+
+class NewEventSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Event
+        fields = ('title', 'description', 'start',
+                  'end', 'location', 'viewable', 'user')
+
+
+class AlertListSerializer(serializers.ModelSerializer):
+    event_time = serializers.SerializerMethodField('get_event_start')
+    event_title = serializers.SerializerMethodField('get_event_title')
+
+    def get_event_start(self, obj):
+        return obj.event.start
+
+    def get_event_title(self, obj):
+        return obj.event.title
+
+    class Meta:
+        model = Alert
+        fields = ('id', 'read_status', 'message', 'event_time', 'event_title')
+
+
+class AlertDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Alert
+        fields = ('id', 'read_status')
+
+
+class ProfessorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Professor
+        fields = ('id', 'first_name', 'last_name')
+
+
+class SectionSerializerDRF(serializers.ModelSerializer):
+    professor_first_name = serializers.SerializerMethodField('get_professor_first_name')
+    professor_last_name = serializers.SerializerMethodField('get_professor_last_name')
+
+    def get_professor_first_name(self, obj):
+        return obj.Professor.first_name
+
+    def get_professor_last_name(self, obj):
+        return obj.Professor.last_name
+
+    class Meta:
+        model = Section
+        fields = ('id', 'Section', 'Professor', 'professor_first_name', 'professor_last_name')
+
+
+class SectionStudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = ('id', 'students')
+        3
+
+class NoteSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = ('student', 'meeting', 'description', 'text', 'file')

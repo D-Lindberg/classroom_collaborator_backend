@@ -23,6 +23,11 @@ Sec1.students.add(u1)
 Sec1.students.add(u2)
 Sec1.save()
 
+Sec2 = Section(Section="another section", Professor = p1, )
+Sec2.save()
+Sec2.students.add(u2)
+Sec2.save()
+
 Rev1 = Review(User = u1, class_section=Sec1, description="I feel a deep hatred for mr professorson and for this class", Professor=p1)
 
 Rev2 = Review(User = u2, class_section=Sec1, description="I also feel a deep hatred for mr professorson and for his class", Professor=p1)

@@ -46,62 +46,6 @@ def current_user(request):
 def userFromId(userID):
     return User.objects.get(id=userID)
 
-class EventList(generics.ListCreateAPIView):
-    
-    # filter to first fake user until authentication is worked out
-    # queryset = Event.objects.filter(user=User.objects.all()[0])
-    permission_classes = (permissions.AllowAny,)
-
-
-    serializer_class = EventListSerializer
-
-
-class EventDetail(generics.RetrieveUpdateDestroyAPIView):
-    # filter to first fake user until authentication is worked out
-#     queryset = Event.objects.filter(user=User.objects.all()[0])
-    serializer_class = EventDetailSerializer
-    permission_classes = (permissions.AllowAny,)
-
-    def perform_create(self, serializer):
-        serializer.save(category=userFromId(
-            serializer.initial_data['userID']))
-        serializer.save()
-
-    def perform_update(self, serializer):
-        serializer.save(category=userFromId(
-            serializer.initial_data['userID']))
-        serializer.save()
-
- 
-
-class NewEvent(generics.CreateAPIView):
-    queryset = Event.objects.all()
-    serializer_class = NewEventSerializer
-    permission_classes = (permissions.AllowAny,)
-
-    def perform_create(self, serializer):
-        event = serializer.save(user=userFromId(
-            serializer.initial_data['userID']))
-        alert = Alert(read_status=False, message='test', event=event)
-        alert.save()
-
-
-class AlertList(generics.ListCreateAPIView):
-    
-    # filter to first fake user until authentication is worked out
-    events = Event.objects.filter(user=User.objects.all()[0])
-    queryset = Alert.objects.filter(event__in=events).filter(read_status=False).order_by('event__start')
-    permission_classes = (permissions.AllowAny,)
-
-
-    serializer_class = AlertListSerializer
-
-class AlertDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Alert.objects.all()
-    serializer_class = AlertDetailSerializer
-    permission_classes = (permissions.AllowAny,)
-
-
 class UserList(APIView):
     """
     Create a new user. It's called 'UserList' because normally we'd have a get
@@ -208,9 +152,62 @@ def new_review(request):
                 return HttpResponse(new_review)
 
 
+
+
+
+
+class EventList(generics.ListCreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
+    serializer_class = EventListSerializer
+    def get_queryset(self):
+        return self.request.user.events.all()
+
+
+class EventDetail(generics.RetrieveUpdateDestroyAPIView):
+    # permission_classes = (permissions.AllowAny,)
+    serializer_class = EventDetailSerializer
+    def get_queryset(self):
+        return self.request.user.events.all()
+
+    def perform_create(self, serializer):
+        serializer.save(category=userFromId(
+            serializer.initial_data['userID']))
+        serializer.save()
+
+    def perform_update(self, serializer):
+        serializer.save(category=userFromId(
+            serializer.initial_data['userID']))
+        serializer.save()
+
+ 
+class NewEvent(generics.CreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
+    queryset = Event.objects.all()
+    serializer_class = NewEventSerializer
+    def perform_create(self, serializer):
+        event = serializer.save(user=userFromId(
+            serializer.initial_data['userID']))
+        alert = Alert(read_status=False, message='test', event=event)
+        alert.save()
+
+
+class AlertList(generics.ListCreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
+    serializer_class = AlertListSerializer
+    def get_queryset(self):
+        events = self.request.user.events.all()
+        return Alert.objects.filter(event__in=events).filter(read_status=False).order_by('event__start')
+
+
+class AlertDetail(generics.RetrieveUpdateDestroyAPIView):
+    # permission_classes = (permissions.AllowAny,)
+    queryset = Alert.objects.all()
+    serializer_class = AlertDetailSerializer
+
+
 class NewNotes(generics.CreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
     parser_classes = (MultiPartParser, FormParser)
-    permission_classes = (permissions.AllowAny,)
     serializer_class = NoteSerializer
 
 
@@ -218,20 +215,24 @@ class ProfessorList(generics.ListCreateAPIView):
     queryset = Professor.objects.all()
     serializer_class = ProfessorSerializer
 
+
 class NewProfessor(generics.CreateAPIView):
     serializer_class = ProfessorSerializer
 
-class ProfessorList(generics.ListCreateAPIView):
+
+class MySectionList(generics.ListCreateAPIView):
+    serializer_class = SectionSerializerDRF
+    def get_queryset(self):
+        return self.request.user.sections.all()
+
+
+class SectionList(generics.ListCreateAPIView):
     queryset = Section.objects.all()
     serializer_class = SectionSerializerDRF
 
+
 class NewSection(generics.CreateAPIView):
     serializer_class = SectionSerializerDRF
-
-    # def post(self, request, format=None):
-    #     serializer = self.serializer_class(data=request.data)
-    #     serializer.is_valid()
-    #     print(serializer.data)
 
 
 class SectionStudents(generics.RetrieveUpdateDestroyAPIView):
