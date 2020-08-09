@@ -210,23 +210,6 @@ def new_section(request):
         #this return is purely aesthetic. You can use the console-network-click the name of the request to see what the new review object looks like
         return HttpResponse(new_Section)
 
-
-# @api_view(['GET'])
-# def all_reviews_by_professor(request, ProfID):
-#     reviewed_professor = Professor.objects.get(id=ProfID)
-#     #create a queryset of all reviews for the current user
-#     all_reviews_by_professor = Review.objects.filter(
-#         Professor=reviewed_professor)
-#     print(all_reviews_by_professor)
-
-#     # #Serialize the queryset all_reviews
-#     serialized_recs = ReviewSerializer(all_reviews_by_professor).all_reviews
-
-#     # convert Serialized object to json
-
-#     return Response(serialized_recs)
-
-
 @csrf_exempt
 @api_view(['GET','POST'])
 def new_review(request):

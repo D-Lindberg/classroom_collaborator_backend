@@ -108,6 +108,7 @@ class ProfessorSerializer(object):
 
         for Professor in self.body:
             prof_detail = {
+                'Prof_ID': Professor.id,
                 'first_name': Professor.first_name,
                 'Last_name': Professor.last_name,
             
@@ -130,6 +131,7 @@ class SectionSerializer(object):
                     'ID': section.id,
                 'Section': section.Section,
                 'Professor': section.Professor.last_name,
+                'ProfID': section.Professor.id,
                 # 'students': section.students.username,
             }
             output['sections'].append(section_detail)
@@ -142,9 +144,10 @@ class SectionSerializer(object):
 
         for section in self.body:
             section_detail = {
-                'Section': Section.Section,
-                'Professor': Section.Professor,
-                'students': Section.students,
+                'Section': section.Section,
+                'Professor': section.Professor,
+                'ProfID': section.Professor.id,
+                'students': section.students,
             }
             output['section'].append(section_detail)
 
@@ -188,7 +191,8 @@ class ReviewSerializer(object):
                 'student': review.User.username,
                 'section': review.class_section.Section,
                 'description': review.description,
-                'Professor': review.Professor.last_name
+                'Professor': review.Professor.last_name,
+                'ProfID': review.Professor.id
             }
             output['reviews'].append(review_detail)
 
@@ -203,7 +207,8 @@ class ReviewSerializer(object):
                 'student': review.User,
                 'section': review.class_section.Section,
                 'description': review.description,
-                'Professor': review.Professor.last_name
+                'Professor': review.Professor.last_name,
+                'ProfID': review.Professor.id
             }
             output['review'].append(review_detail)
 
