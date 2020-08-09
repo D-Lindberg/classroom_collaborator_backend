@@ -8,7 +8,6 @@ from builtins import object
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = ('id', 'username',)
@@ -36,15 +35,26 @@ class UserSerializerWithToken(serializers.ModelSerializer):
         return instance
 
     class Meta:
-        model = User
-        fields = ('token', 'username',)
+        extra_kwargs = {"password": {"write_only": True}}
 
+        model = User
+        fields = (
+            'token',
+            'username',
+            'password',
+        )
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('first_name', 'last_name', 'username', 'college', 'profile_picture',)
+        fields = (
+            'first_name',
+            'last_name',
+            'username',
+            'college',
+            'profile_picture',
+        )
 
 
 
@@ -57,13 +67,13 @@ class SectionSerializer(object):
         output = {'sections': []}
 
         for section in self.body:
-                section_detail = {
-                'id': section.id,
+            section_detail = {
+                    'ID': section.id,
                 'Section': section.Section,
                 'Professor': section.Professor.last_name,
                 # 'students': section.students.username,
             }
-                output['sections'].append(section_detail)
+            output['sections'].append(section_detail)
 
         return output
 
@@ -72,37 +82,34 @@ class SectionSerializer(object):
         output = {'section': []}
 
         for section in self.body:
-                section_detail = {
+            section_detail = {
                 'Section': Section.Section,
                 'Professor': Section.Professor,
                 'students': Section.students,
             }
-                output['section'].append(section_detail)
+            output['section'].append(section_detail)
 
         return output
 
 
-class ClassMeetingSerializer (serializers.ModelSerializer):
+class ClassMeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassMeeting
-        fields = ('__all__',)
+        fields = ('__all__', )
 
 
 
 
-
-class CommentSerializer (serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('__all__',)
+        fields = ('__all__', )
 
 
 class EventSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Event
-        fields = ('__all__',)
-
+        fields = ('__all__', )
 
 
 class ReviewSerializer(object):
@@ -114,13 +121,13 @@ class ReviewSerializer(object):
         output = {'reviews': []}
 
         for review in self.body:
-                review_detail = {
+            review_detail = {
                 'student': review.User.username,
                 'section': review.class_section.Section,
                 'description': review.description,
                 'Professor': review.Professor.last_name
             }
-                output['reviews'].append(review_detail)
+            output['reviews'].append(review_detail)
 
         return output
 
@@ -129,13 +136,13 @@ class ReviewSerializer(object):
         output = {'review': []}
 
         for review in self.body:
-                review_detail = {
+            review_detail = {
                 'student': review.User,
                 'section': review.class_section.Section,
                 'description': review.description,
                 'Professor': review.Professor.last_name
             }
-                output['review'].append(review_detail)
+            output['review'].append(review_detail)
 
         return output
 

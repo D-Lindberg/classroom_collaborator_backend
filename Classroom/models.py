@@ -2,28 +2,24 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-
-
 class Profile(models.Model):
 
-        first_name = models.CharField(max_length=50, default = "first_name")
-        last_name = models.CharField(max_length=50, default = "last_name")
-        college = models.CharField(max_length=50)
-        username = models.OneToOneField(User, on_delete=models.CASCADE)
-        profile_picture = models.ImageField()
-        
-        def __str__(self):
-            return f'{self.first_name} {self.last_name} {self.college}'
-                   
-                   
+    college = models.CharField(max_length=50)
+    username = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    profile_picture = models.FileField()
+
+    def __str__(self):
+        return f' {self.college}'
 
 
 class Professor(models.Model):
-      first_name = models.CharField(max_length=50)
-      last_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
 
-      def __str__(self):
-          return f'{self.first_name} {self.last_name}'
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
 
 
 class Section(models.Model):
@@ -64,23 +60,32 @@ class Event(models.Model):
     end = models.DateTimeField()
     location = models.CharField(max_length=100, blank=True, null=True)
     viewable = models.BooleanField()
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='events', blank=True, null=True)
-    class_section = models.ForeignKey(
-        Section, on_delete=models.CASCADE, related_name='events', blank=True, null=True)
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             related_name='events',
+                             blank=True,
+                             null=True)
+    class_section = models.ForeignKey(Section,
+                                      on_delete=models.CASCADE,
+                                      related_name='events',
+                                      blank=True,
+                                      null=True)
 
 
 class Review(models.Model):
 
-        User = models.ForeignKey(User, on_delete=models.CASCADE)
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
 
-        class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    class_section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
-        description = models.TextField(max_length=1000)
+    description = models.TextField(max_length=1000)
 
-        Professor =models.ForeignKey(Professor, on_delete=models.CASCADE) 
+    Professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
+
 
 class Alert(models.Model):
     read_status = models.BooleanField(default=False)
     message = models.CharField(max_length=50)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='alert')
+    event = models.ForeignKey(Event,
+                              on_delete=models.CASCADE,
+                              related_name='alert')
