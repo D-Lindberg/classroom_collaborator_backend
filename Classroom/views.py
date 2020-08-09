@@ -25,9 +25,9 @@ def user_list(request):
 
 def get_current_user(request):
     serializer = UserSerializer(request.user)
-    current_user_username = serializer.data['username']
-    print(User.objects.get(username=current_user_username))
-    return User.objects.get(username=current_user_username)
+    current_user_id = serializer.data['id']
+    print(User.objects.get(id=current_user_id))
+    return User.objects.get(id=current_user_id)
 
 
 @api_view(['POST'])
@@ -58,7 +58,7 @@ def userFromId(userID):
 class EventList(generics.ListCreateAPIView):
 
     # filter to first fake user until authentication is worked out
-    #     queryset = Event.objects.filter(user=User.objects.all()[0])
+    queryset = Event.objects.filter(user=User.objects.all()[0])
     permission_classes = (permissions.AllowAny, )
 
     serializer_class = EventListSerializer
@@ -66,7 +66,7 @@ class EventList(generics.ListCreateAPIView):
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     # filter to first fake user until authentication is worked out
-    #     queryset = Event.objects.filter(user=User.objects.all()[0])
+    queryset = Event.objects.filter(user=User.objects.all()[0])
     serializer_class = EventDetailSerializer
     permission_classes = (permissions.AllowAny, )
 
@@ -231,17 +231,22 @@ def all_reviews_by_professor(request, ProfID):
 def new_review(request):
     #POST REQUEST FROM REACT
     if request.method == "POST":
+
         #current autheticated user helper function
         current_user = get_current_user(request)
+
         #section from the body? of the post request
         sectionID = request.data["sectionID"]
+        print(sectionID)
         #Use this info to get ahold of the section object
         reviewed_section = Section.objects.get(id=sectionID)
+        print(reviewed_section)
         #description from the body of the post request
         description = request.data["description"]
+        print(description)
         #professor info through the same process as section
-        professor = request.data["ProfessorID"]
-        reviewed_professor = Professor.objects.get(id=professor)
+        reviewed_professor = Professor.objects.get(section=sectionID)
+        print(reviewed_professor)
         #create the new review object which records it in the database
         new_review = Review.objects.create(User=current_user,
                                            class_section=reviewed_section,
@@ -279,31 +284,31 @@ def all_reviews_by_professor(request, ProfID):
     return Response(serialized_recs)
 
 
-@csrf_exempt
-@api_view(['GET', 'POST'])
-def new_review(request):
-    #POST REQUEST FROM REACT
-    if request.method == "POST":
-        #current autheticated user helper function
-        current_user = get_current_user(request)
+# @csrf_exempt
+# @api_view(['GET', 'POST'])
+# def new_review(request):
+#     #POST REQUEST FROM REACT
+#     if request.method == "POST":
+#         #current autheticated user helper function
+#         current_user = get_current_user(request)
 
-        #section from the body? of the post request
-        sectionID = request.data["sectionID"]
-        #Use this info to get ahold of the section object
-        reviewed_section = Section.objects.get(id=sectionID)
+#         #section from the body? of the post request
+#         sectionID = request.data["sectionID"]
+#         #Use this info to get ahold of the section object
+#         reviewed_section = Section.objects.get(id=sectionID)
 
-        #description from the body of the post request
-        description = request.data["description"]
+#         #description from the body of the post request
+#         description = request.data["description"]
 
-        #professor info through the same process as section
-        professor = request.data["ProfessorID"]
-        reviewed_professor = Professor.objects.get(id=professor)
+#         #professor info through the same process as section
+#         professor = request.data["ProfessorID"]
+#         reviewed_professor = Professor.objects.get(id=professor)
 
-        #create the new review object which records it in the database
-        new_review = Review.objects.create(User=current_user,
-                                           class_section=reviewed_section,
-                                           description=description,
-                                           Professor=reviewed_professor)
+#         #create the new review object which records it in the database
+#         new_review = Review.objects.create(User=current_user,
+#                                            class_section=reviewed_section,
+#                                            description=description,
+#                                            Professor=reviewed_professor)
 
-        #this return is purely aesthetic. You can use the console-network-click the name of the request to see what the new review object looks like
-        return HttpResponse(new_review)
+#         #this return is purely aesthetic. You can use the console-network-click the name of the request to see what the new review object looks like
+#         return HttpResponse(new_review)
