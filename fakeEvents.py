@@ -5,10 +5,10 @@ from django.utils import timezone
 User.objects.all().delete()
 Event.objects.all().delete()
 
-u1 = User(username='john')
+u1 = User(username='john', email='john@gmail.com', password='1')
 u1.save()
 
-u2 = User(username='sarah')
+u2 = User(username='sarah', email='sarah@gmail.com', password='1')
 u2.save()
 
 p1 = Professor(first_name='Mr', last_name ="Professorson")

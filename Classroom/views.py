@@ -54,58 +54,57 @@ def current_user(request):
 def userFromId(userID):
     return User.objects.get(id=userID)
 
-
 class EventList(generics.ListCreateAPIView):
-
-    # filter to first fake user until authentication is worked out
-    queryset = Event.objects.filter(user=User.objects.all()[0])
-    permission_classes = (permissions.AllowAny, )
-
+    # permission_classes = (permissions.AllowAny,)
     serializer_class = EventListSerializer
+    def get_queryset(self):
+        return self.request.user.events.all()
 
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
-    # filter to first fake user until authentication is worked out
-    queryset = Event.objects.filter(user=User.objects.all()[0])
+    # permission_classes = (permissions.AllowAny,)
     serializer_class = EventDetailSerializer
-    permission_classes = (permissions.AllowAny, )
+    def get_queryset(self):
+        return self.request.user.events.all()
 
     def perform_create(self, serializer):
-        serializer.save(category=userFromId(serializer.initial_data['userID']))
+        serializer.save(self.request.user)
         serializer.save()
 
     def perform_update(self, serializer):
-        serializer.save(category=userFromId(serializer.initial_data['userID']))
+        serializer.save(self.request.user)
         serializer.save()
 
-
+ 
 class NewEvent(generics.CreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
     queryset = Event.objects.all()
     serializer_class = NewEventSerializer
-    permission_classes = (permissions.AllowAny, )
-
     def perform_create(self, serializer):
-        event = serializer.save(
-            user=userFromId(serializer.initial_data['userID']))
+        event = serializer.save(user=self.request.user)
         alert = Alert(read_status=False, message='test', event=event)
         alert.save()
 
 
 class AlertList(generics.ListCreateAPIView):
-
-    # filter to first fake user until authentication is worked out
-    events = Event.objects.filter(user=User.objects.all()[0])
-    queryset = Alert.objects.filter(event__in=events).filter(
-        read_status=False).order_by('event__start')
-    permission_classes = (permissions.AllowAny, )
-
+    # permission_classes = (permissions.AllowAny,)
     serializer_class = AlertListSerializer
+    def get_queryset(self):
+        events = self.request.user.events.all()
+        alerts = Alert.objects.filter(event__in=events).filter(read_status=False).order_by('event__start')
+        return Alert.objects.filter(event__in=events).filter(read_status=False).order_by('event__start')
 
 
 class AlertDetail(generics.RetrieveUpdateDestroyAPIView):
+    # permission_classes = (permissions.AllowAny,)
     queryset = Alert.objects.all()
     serializer_class = AlertDetailSerializer
-    permission_classes = (permissions.AllowAny, )
+
+
+class NewNotes(generics.CreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
+    parser_classes = (MultiPartParser, FormParser)
+    serializer_class = NoteSerializer
 
 
 class ProfileView(CreateAPIView):
