@@ -13,6 +13,7 @@ from .serializers import *
 from .models import *
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from ipdb import launch_ipdb_on_exception
 
 
 def user_list(request):
@@ -208,23 +209,6 @@ def new_section(request):
         #this return is purely aesthetic. You can use the console-network-click the name of the request to see what the new review object looks like
         return HttpResponse(new_Section)
 
-
-@api_view(['GET'])
-def all_reviews_by_professor(request, ProfID):
-    reviewed_professor = Professor.objects.get(id=ProfID)
-    #create a queryset of all reviews for the current user
-    all_reviews_by_professor = Review.objects.filter(
-        Professor=reviewed_professor)
-    print(all_reviews_by_professor)
-
-    # #Serialize the queryset all_reviews
-    serialized_recs = ReviewSerializer(all_reviews_by_professor).all_reviews
-
-    # convert Serialized object to json
-
-    return Response(serialized_recs)
-
-
 @csrf_exempt
 @api_view(['GET','POST'])
 def new_review(request):
@@ -255,9 +239,7 @@ def new_review(request):
 @api_view(['GET'])
 def get_sections_for_current_user(request):
     current_user = get_current_user(request)
-
     my_class_sections = Section.objects.filter(students=current_user)
-
     serialized_sections = SectionSerializer(my_class_sections).all_sections
     print(serialized_sections)
     return Response(serialized_sections)
@@ -279,31 +261,16 @@ def all_reviews_by_professor(request, ProfID):
     return Response(serialized_recs)
 
 
-# @csrf_exempt
-# @api_view(['GET', 'POST'])
-# def new_review(request):
-#     #POST REQUEST FROM REACT
-#     if request.method == "POST":
-#         #current autheticated user helper function
-#         current_user = get_current_user(request)
+@api_view(['GET'])
+def get_professor(request, ProfID):
+        ProfessorObject = Professor.objects.filter(id=ProfID)
+        print(ProfessorObject)
+        serialized_Professor = ProfessorSerializer(ProfessorObject).prof_detail
+        print(serialized_Professor)
+        return Response(serialized_Professor)
+                
 
-#         #section from the body? of the post request
-#         sectionID = request.data["sectionID"]
-#         #Use this info to get ahold of the section object
-#         reviewed_section = Section.objects.get(id=sectionID)
 
-#         #description from the body of the post request
-#         description = request.data["description"]
 
-#         #professor info through the same process as section
-#         professor = request.data["ProfessorID"]
-#         reviewed_professor = Professor.objects.get(id=professor)
 
-#         #create the new review object which records it in the database
-#         new_review = Review.objects.create(User=current_user,
-#                                            class_section=reviewed_section,
-#                                            description=description,
-#                                            Professor=reviewed_professor)
 
-#         #this return is purely aesthetic. You can use the console-network-click the name of the request to see what the new review object looks like
-#         return HttpResponse(new_review)
