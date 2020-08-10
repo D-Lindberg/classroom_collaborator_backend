@@ -17,14 +17,16 @@ from .views import (
     AlertList,
     AlertDetail,
     new_review, 
-    get_professor #ProfileDetail 
+    get_professor, #ProfileDetail 
+    ClassMeetingList,
+    ClassMeetingDetail,
+    create_meeting
 )
 
 urlpatterns = [
     path('register/', register),
     path('current_user/', current_user),
     path('current_user/reviews/all', all_reviews_by_user),
-    path('current_user/reviews/new', new_review),
     path('current_user/sections/all', get_sections_for_current_user),
     path('current_user/sections/<int:SectionID>/AddAStudent',
          add_current_user_to_section),
@@ -40,5 +42,8 @@ urlpatterns = [
     path('events/new', NewEvent.as_view(), name='new_event'),
     path('alerts/', AlertList.as_view(), name='alert_list'),
     path('alerts/<int:pk>', AlertDetail.as_view(), name='alert_detail'),
+    path('meetings/', ClassMeetingList.as_view()),
+    path('meetings/<int:pk>/', ClassMeetingDetail.as_view()),
+    path('meetings/new/', create_meeting),
     # path('profile/<int:pk>/', ProfileDetail.as_view()),
 ]

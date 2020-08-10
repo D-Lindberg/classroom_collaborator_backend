@@ -26,6 +26,7 @@ class Professor(models.Model):
 class Section(models.Model):
 
     Section = models.CharField(max_length=255)
+    Name = models.CharField(max_length=255)
     Professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
     students = models.ManyToManyField(User)
 
@@ -82,7 +83,7 @@ class Review(models.Model):
 
 class Alert(models.Model):
     read_status = models.BooleanField(default=False)
-    message = models.CharField(max_length=50)
+    message = models.CharField(max_length=55)
     event = models.ForeignKey(Event,
                               on_delete=models.CASCADE,
                               related_name='alert')

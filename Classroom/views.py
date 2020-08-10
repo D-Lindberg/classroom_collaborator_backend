@@ -15,12 +15,13 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
+
 def user_list(request):
     users = User.objects.all()
     return HttpResponse(users)
 
 
-#Helper Function uses the information in the request to return information pertinent to the current user
+# Helper Function uses the information in the request to return information pertinent to the current user
 
 
 def get_current_user(request):
@@ -55,87 +56,124 @@ def userFromId(userID):
 
 
 class EventList(generics.ListCreateAPIView):
-
-    # filter to first fake user until authentication is worked out
-    queryset = Event.objects.filter(user=User.objects.all()[0])
-    permission_classes = (permissions.AllowAny, )
-
+    # permission_classes = (permissions.AllowAny,)
     serializer_class = EventListSerializer
+
+    def get_queryset(self):
+        return self.request.user.events.all()
 
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
-    # filter to first fake user until authentication is worked out
-    queryset = Event.objects.filter(user=User.objects.all()[0])
+    # permission_classes = (permissions.AllowAny,)
     serializer_class = EventDetailSerializer
-    permission_classes = (permissions.AllowAny, )
+
+    def get_queryset(self):
+        return self.request.user.events.all()
 
     def perform_create(self, serializer):
-        serializer.save(category=userFromId(serializer.initial_data['userID']))
+        serializer.save(self.request.user)
         serializer.save()
 
     def perform_update(self, serializer):
-        serializer.save(category=userFromId(serializer.initial_data['userID']))
+        serializer.save(self.request.user)
         serializer.save()
 
 
 class NewEvent(generics.CreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
     queryset = Event.objects.all()
     serializer_class = NewEventSerializer
-    permission_classes = (permissions.AllowAny, )
 
     def perform_create(self, serializer):
-        event = serializer.save(
-            user=userFromId(serializer.initial_data['userID']))
+        event = serializer.save(user=self.request.user)
         alert = Alert(read_status=False, message='test', event=event)
         alert.save()
 
 
 class AlertList(generics.ListCreateAPIView):
-
-    # filter to first fake user until authentication is worked out
-    events = Event.objects.filter(user=User.objects.all()[0])
-    queryset = Alert.objects.filter(event__in=events).filter(
-        read_status=False).order_by('event__start')
-    permission_classes = (permissions.AllowAny, )
-
+    # permission_classes = (permissions.AllowAny,)
     serializer_class = AlertListSerializer
+
+    def get_queryset(self):
+        events = self.request.user.events.all()
+        alerts = Alert.objects.filter(event__in=events).filter(
+            read_status=False).order_by('event__start')
+        return Alert.objects.filter(event__in=events).filter(read_status=False).order_by('event__start')
 
 
 class AlertDetail(generics.RetrieveUpdateDestroyAPIView):
+    # permission_classes = (permissions.AllowAny,)
     queryset = Alert.objects.all()
     serializer_class = AlertDetailSerializer
-    permission_classes = (permissions.AllowAny, )
+
+
+class NewNotes(generics.CreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
+    parser_classes = (MultiPartParser, FormParser)
+    serializer_class = NoteSerializer
 
 
 class ProfileView(CreateAPIView):
-    #parser_classes = (FileUploadParser, MultiPartParser)
+    #parser_classes = (FileUploadParser, )
     serializer_class = UserProfileSerializer
 
+    #parser_class = (FileUploadParser, )
     parser_classes = (MultiPartParser, FormParser)
-    #permission_classes = (permissions.AllowAny,)
-    #serializer_class = NoteSerializer
+    permission_classes = (permissions.AllowAny, )
 
-    #parser_class = (MultiPartParser, FormParser)
+    # serializer_class = NoteSerializer
 
-    # def post(self, request, *args, **kwargs):
+    # parser_class = (MultiPartParser, FormParser)
 
-    #     serializer = UserProfileSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #         return Response(serializer.errors,
-    #                         status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        serializer = UserProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # def get(self, request, *args, **kwargs):
-    #     user = request.user
-    #     queryset = Profile.objects.filter(username_id=user.id)
-    #     serializer = UserProfileSerializer(queryset, many=True)
-    #     if len(serializer.data) > 0:
-    #         data = serializer.data[0]
-    #     else:
-    #         data = []
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        queryset = Profile.objects.filter(username_id=user.id)
+        serializer = UserProfileSerializer(queryset, many=True)
+        if len(serializer.data) > 0:
+            data = serializer.data[0]
+        else:
+            data = []
 
-    #     return Response(data=data)
+        return Response(data=data)
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+
+        first_name = request.data.get('first_name', '')
+        last_name = request.data.get('last_name', '')
+        college = request.data.get('college', '')
+
+        profile_picture = request.data.get('profile_picture', None)
+
+        profile_ = Profile.objects.filter(username_id=request.user.id)
+
+        if first_name:
+            profile_.update(first_name=first_name)
+
+        if last_name:
+            profile_.update(last_name=last_name)
+
+        if college:
+            profile_.update(college=college)
+
+        if profile_picture:
+            user = Profile.objects.get(username_id=request.user.id)
+            file = UserProfileSerializer(
+                user, data={'profile_picture': profile_picture}, partial=True)
+            file.is_valid(raise_exception=True)
+            file.save()
+
+        queryset = Profile.objects.filter(username_id=request.user.id)
+        profile = UserProfileSerializer(queryset, many=True)
+
+        return Response(data=profile.data, status=status.HTTP_200_OK)
 
 
 # class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -153,7 +191,7 @@ def all_reviews_by_user(request):
 
     current_user_object = get_current_user(request)
 
-    #create a queryset of all reviews for the current user
+    # create a queryset of all reviews for the current user
     all_reviews_by_user = Review.objects.filter(User=current_user_object)
 
     # #Serialize the queryset all_reviews
@@ -178,7 +216,7 @@ def all_sections(request):
 def add_current_user_to_section(request, SectionID):
     current_user_object = get_current_user(request)
     current_section_object = Section.objects.get(id=SectionID)
-    #add the current sudent to the correct section
+    # add the current sudent to the correct section
     current_section_object.students.add(current_user_object)
 
     return HttpResponse('Successfully added')
@@ -187,6 +225,7 @@ def add_current_user_to_section(request, SectionID):
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def new_section(request):
+
 
     #POST REQUEST FROM REACT
         if request.method == "POST":
@@ -201,6 +240,7 @@ def new_section(request):
                 #create the new review object which records it in the database
                 new_Section = Section.objects.create(Section=section_title,Professor=ProfessorObject)
 
+
                 #Now add the current user to the class section
                 current_user_object = get_current_user(request)
                 new_Section.students.add(current_user_object)
@@ -211,8 +251,10 @@ def new_section(request):
                return HttpResponse('This is a get request') 
 
 
+
+
 @csrf_exempt
-@api_view(['GET','POST'])
+@api_view(['GET', 'POST'])
 def new_review(request):
         #POST REQUEST FROM REACT
         if request.method == "POST":
@@ -234,6 +276,7 @@ def new_review(request):
                 return HttpResponse(new_review)
 
 #Michael Needs this for review creation on the front end
+
 @api_view(['GET'])
 def get_sections_for_current_user(request):
     current_user = get_current_user(request)
@@ -245,7 +288,7 @@ def get_sections_for_current_user(request):
 @api_view(['GET'])
 def all_reviews_by_professor(request, ProfID):
     reviewed_professor = Professor.objects.get(id=ProfID)
-    #create a queryset of all reviews for the current user
+    # create a queryset of all reviews for the current user
     all_reviews_by_professor = Review.objects.filter(
         Professor=reviewed_professor)
 
@@ -264,7 +307,36 @@ def get_professor(request, ProfID):
         return Response(serialized_Professor)
                 
 
+class ClassMeetingList(generics.ListCreateAPIView):
+
+    # filter to first fake user until authentication is worked out
+    queryset = ClassMeeting.objects.all()
+    permission_classes = (permissions.AllowAny,)
+
+    serializer_class = ClassMeetingSerializer
 
 
+class ClassMeetingDetail(generics.RetrieveUpdateDestroyAPIView):
+
+    # filter to first fake user until authentication is worked out
+    queryset = ClassMeeting.objects.all()
+    permission_classes = (permissions.AllowAny,)
+
+    serializer_class = ClassMeetingSerializer
 
 
+@api_view(['POST'])
+def create_meeting(request):
+    serializer = ClassMeetingSerializer(data=request.data)
+    if serializer.is_valid():
+        class_meeting = serializer.save()
+    return Response(serializer.data)
+
+# extra?
+
+
+@api_view(['DELETE'])
+def delete_meeting(request, pk):
+    class_meeting = ClassMeeting.objects.get(id=pk)
+    class_meeting.delete()
+    return Response('Class Meeting Deleted')
