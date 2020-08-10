@@ -19,7 +19,11 @@ from .views import (
     new_review, 
     get_professor, #ProfileDetail,
     SectionDetail,
-    SectionEventList
+    SectionEventList,
+    ClassMeetingList,
+    # ClassMeetingDetail,
+    create_meeting,
+    CommentsList,
 )
 
 urlpatterns = [
@@ -44,5 +48,9 @@ urlpatterns = [
     path('events/new', NewEvent.as_view(), name='new_event'),
     path('alerts/', AlertList.as_view(), name='alert_list'),
     path('alerts/<int:pk>', AlertDetail.as_view(), name='alert_detail'),
+    path('meetings/', ClassMeetingList.as_view()),
+    # path('meetings/<int:pk>/', ClassMeetingDetail.as_view()),
+    path('meetings/new/', create_meeting),
+    path('comments', CommentsList.as_view()),
     # path('profile/<int:pk>/', ProfileDetail.as_view()),
 ]

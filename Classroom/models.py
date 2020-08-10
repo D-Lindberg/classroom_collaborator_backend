@@ -37,19 +37,18 @@ class ClassMeeting(models.Model):
 
 
 class Note(models.Model):
-    # Subject to Change due to hosting of Images of notes
-    # Content Object
-    content = models.TextField(max_length=500)
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
-    meeting = models.ForeignKey(ClassMeeting, on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
+    meeting = models.ForeignKey(ClassMeeting, on_delete=models.CASCADE, related_name='notes')
+    description = models.CharField(max_length=200)
+    text = models.TextField(max_length=1000, blank=True, null=True)
+    file = models.FileField(blank=False, null=True)
 
 
 class Comment(models.Model):
     content = models.TextField(max_length=500)
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
-    note = models.ForeignKey(Note, on_delete=models.CASCADE)
-    # I think the below is how you create a self reference to another instance of the same class
-    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='comments', blank=True, null=True)
+    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
 
 
 class Event(models.Model):

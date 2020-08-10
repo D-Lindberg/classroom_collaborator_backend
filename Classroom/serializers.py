@@ -47,6 +47,21 @@ class AlertDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'read_status')
 
 
+class SubCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('student', 'content')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    subcomments = SubCommentSerializer()
+
+    class Meta:
+        model = Comment
+        # fields = ('student', 'content', 'subcomments')
+        fields = ('id', 'content')
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
@@ -166,10 +181,10 @@ class NoteSerializer(serializers.ModelSerializer):
         fields = ('__all__', )
 
 
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('__all__', )
+# class CommentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Comment
+#         fields = ('__all__', )
 
 
 class EventSerializer(serializers.ModelSerializer):

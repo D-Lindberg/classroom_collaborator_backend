@@ -280,6 +280,43 @@ def get_professor(request, ProfID):
         serialized_Professor = ProfessorSerializer(ProfessorObject).prof_detail
         print(serialized_Professor)
         return Response(serialized_Professor)
+
+class ClassMeetingList(generics.ListCreateAPIView):
+
+    # filter to first fake user until authentication is worked out
+    queryset = ClassMeeting.objects.all()
+    permission_classes = (permissions.AllowAny,)
+
+    serializer_class = ClassMeetingSerializer
+
+class CommentsList(generics.ListCreateAPIView):
+
+    # filter to first fake user until authentication is worked out
+    # queryset = ClassMeeting.objects.all()
+    # permission_classes = (permissions.AllowAny,)
+    queryset = Comment.objects.all()
+
+    serializer_class = CommentSerializer
+    # queryset = ClassMeeting.objects.all()
+    # permission_classes = (permissions.AllowAny,)
+
+    # serializer_class = ClassMeetingSerializer
+
+
+@api_view(['POST'])
+def create_meeting(request):
+    serializer = ClassMeetingSerializer(data=request.data)
+    if serializer.is_valid():
+        class_meeting = serializer.save()
+    return Response(serializer.data)
+
+#extra?
+@api_view(['DELETE'])
+def delete_meeting(request, pk):
+    class_meeting = ClassMeeting.objects.get(id=pk)
+    class_meeting.delete()
+    return Response('Class Meeting Deleted')
+
                 
 
 
