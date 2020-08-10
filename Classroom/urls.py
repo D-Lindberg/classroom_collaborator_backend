@@ -17,10 +17,10 @@ from .views import (
     AlertList,
     AlertDetail,
     new_review,
-    # get_professor, #ProfileDetail
-    # ClassMeetingList,
-    # ClassMeetingDetail,
-    # create_meeting
+    get_professor,  # ProfileDetail
+    ClassMeetingList,
+    ClassMeetingDetail,
+    create_meeting
 )
 
 urlpatterns = [
