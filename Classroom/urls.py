@@ -1,5 +1,4 @@
 from django.urls import path
-
 from .views import (
     current_user,
     all_reviews_by_user,
@@ -16,7 +15,12 @@ from .views import (
     add_current_user_to_section,
     new_section,
     AlertList,
-    AlertDetail,  #ProfileDetail 
+    AlertDetail,
+    new_review, 
+    get_professor, #ProfileDetail 
+    ClassMeetingList,
+    ClassMeetingDetail,
+    create_meeting
 )
 
 urlpatterns = [
@@ -27,6 +31,7 @@ urlpatterns = [
     path('current_user/sections/<int:SectionID>/AddAStudent',
          add_current_user_to_section),
     path('reviews/<ProfID>', all_reviews_by_professor),
+    path('<ProfID>', get_professor),
     path('sections/new', new_section),
     path('sections/all', all_sections),
     path('profile/', ProfileView.as_view()),
@@ -37,5 +42,8 @@ urlpatterns = [
     path('events/new', NewEvent.as_view(), name='new_event'),
     path('alerts/', AlertList.as_view(), name='alert_list'),
     path('alerts/<int:pk>', AlertDetail.as_view(), name='alert_detail'),
+    path('meetings/', ClassMeetingList.as_view()),
+    path('meetings/<int:pk>/', ClassMeetingDetail.as_view()),
+    path('meetings/new/', create_meeting),
     # path('profile/<int:pk>/', ProfileDetail.as_view()),
 ]
