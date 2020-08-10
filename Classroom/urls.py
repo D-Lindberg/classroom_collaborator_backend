@@ -17,7 +17,9 @@ from .views import (
     AlertList,
     AlertDetail,
     new_review, 
-    get_professor #ProfileDetail 
+    get_professor, #ProfileDetail,
+    SectionDetail,
+    SectionEventList
 )
 
 urlpatterns = [
@@ -29,9 +31,11 @@ urlpatterns = [
     path('current_user/sections/<int:SectionID>/AddAStudent',
          add_current_user_to_section),
     path('reviews/<ProfID>', all_reviews_by_professor),
-    path('<ProfID>', get_professor),
+    # path('<ProfID>', get_professor),
     path('sections/new', new_section),
     path('sections/all', all_sections),
+    path('sections/<int:pk>', SectionDetail.as_view()),
+    path('sections/<int:pk>/events', SectionEventList.as_view()),
     path('profile/', ProfileView.as_view()),
     # path('users/', UserList.as_view()),
     # path('profile/', ProfileDetail.as_view()),

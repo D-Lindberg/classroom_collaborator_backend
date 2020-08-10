@@ -219,3 +219,17 @@ class AlertSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alert
         fields = ('__all__', )
+
+class SectionDetailSerializer(serializers.ModelSerializer):
+    professor_first_name = serializers.SerializerMethodField('get_professor_first_name')
+    professor_last_name = serializers.SerializerMethodField('get_professor_last_name')
+
+    def get_professor_first_name(self, obj):
+        return obj.Professor.first_name
+
+    def get_professor_last_name(self, obj):
+        return obj.Professor.last_name
+
+    class Meta:
+        model = Section
+        fields = ('id', 'Section', 'Name', 'professor_first_name', 'professor_last_name')

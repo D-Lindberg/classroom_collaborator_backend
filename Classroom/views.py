@@ -69,11 +69,11 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
         return self.request.user.events.all()
 
     def perform_create(self, serializer):
-        serializer.save(self.request.user)
+        serializer.save(user=self.request.user)
         serializer.save()
 
     def perform_update(self, serializer):
-        serializer.save(self.request.user)
+        serializer.save(user=self.request.user)
         serializer.save()
 
  
@@ -86,6 +86,13 @@ class NewEvent(generics.CreateAPIView):
         alert = Alert(read_status=False, message='test', event=event)
         alert.save()
 
+class SectionEventList(generics.ListCreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
+    serializer_class = EventListSerializer
+    def get_queryset(self):
+        print('')
+        return Section.objects.get(id=self.kwargs['pk']).events.all()
+        
 
 class AlertList(generics.ListCreateAPIView):
     # permission_classes = (permissions.AllowAny,)
@@ -107,6 +114,11 @@ class NewNotes(generics.CreateAPIView):
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = NoteSerializer
 
+class SectionDetail(generics.RetrieveAPIView):
+    # queryset = Section.objects.all()
+    serializer_class = SectionDetailSerializer
+    def get_queryset(self):
+        return self.request.user.sections.all()
 
 class ProfileView(CreateAPIView):
     #parser_classes = (FileUploadParser, MultiPartParser)

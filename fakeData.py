@@ -4,11 +4,14 @@ from django.utils import timezone
 
 
 #users
-u1 = User(username='john', email='john@gmail.com', password='11')
+u1 = User(username='john', email='john@gmail.com')
+u1.set_password('11')
 u1.save()
-u2 = User(username='sarah', email='sarah@gmail.com', password='11')
+u2 = User(username='sarah', email='sarah@gmail.com')
+u2.set_password('11')
 u2.save()
-u3 = User(username='mike', email='sarah@gmail.com', password='11')
+u3 = User(username='mike', email='sarah@gmail.com')
+u3.set_password('11')
 u3.save()
 
 #professors
@@ -38,29 +41,55 @@ rev2.save()
 
 #events
 e1 = Event(
-    title='event1',
-    description='test event1',
+    title='study session',
+    description='study session for the midterm',
     start=timezone.make_aware(timezone.datetime(2020, 8, 10, 14, 30)),
     end=timezone.make_aware(timezone.datetime(2020, 8, 10, 18, 0)),
-    location='mars',
+    location='library',
     viewable=True,
     user=u1
     )
 e1.save()
 
 e2 = Event(
-    title='event2',
-    description='test event2',
+    title='homework help',
+    description='work on homework together',
     start=timezone.make_aware(timezone.datetime(2020, 8, 15, 8, 0)),
-    end=timezone.make_aware(timezone.datetime(2020, 8, 18, 16, 0)),
-    location='moon',
+    end=timezone.make_aware(timezone.datetime(2020, 8, 15, 16, 0)),
+    location='starbucks',
     viewable=False,
     user=u1
     )
 e2.save()
 
+e3 = Event(
+    title='midterm',
+    description='2nd midterm of the semester',
+    start=timezone.make_aware(timezone.datetime(2020, 8, 12, 16, 0)),
+    end=timezone.make_aware(timezone.datetime(2020, 8, 12, 18, 0)),
+    location='SAL 101',
+    viewable=True,
+    class_section=sec1
+    )
+e3.save()
+
+e4 = Event(
+    title='final project',
+    description='final project due',
+    start=timezone.make_aware(timezone.datetime(2020, 8, 14, 12, 0)),
+    end=timezone.make_aware(timezone.datetime(2020, 8, 14, 12, 0)),
+    location='SAL 101',
+    viewable=True,
+    class_section=sec1
+    )
+e4.save()
+
 #alerts
-a1 = Alert(message='test', event=e1)
+a1 = Alert(message='', event=e1)
+a2 = Alert(message='', event=e2)
+a3 = Alert(message='', event=e3)
+a4 = Alert(message='', event=e4)
 a1.save()
-a2 = Alert(message='test', event=e2)
 a2.save()
+a3.save()
+a4.save()
