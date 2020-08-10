@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'classroom_collaborator_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ClassDB',
+        'NAME': 'WHY',
     }
 }
 
@@ -107,7 +107,10 @@ CORS_ORIGIN_WHITELIST = ('localhost:3000', )
 CORS_ORIGIN_REGEX_WHITELIST = ('localhost:3001', )
 
 CORS_ORIGIN_ALLOW_ALL = True
+
 CORS_ALLOW_CREDENTIALS = True
+
+MAX_UPLOAD_SIZE = 2621440
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',

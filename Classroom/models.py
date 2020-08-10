@@ -82,7 +82,7 @@ class Review(models.Model):
 
 class Alert(models.Model):
     read_status = models.BooleanField(default=False)
-    message = models.CharField(max_length=50)
+    message = models.CharField(max_length=55)
     event = models.ForeignKey(Event,
                               on_delete=models.CASCADE,
                               related_name='alert')
