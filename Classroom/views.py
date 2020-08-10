@@ -57,7 +57,7 @@ def userFromId(userID):
 
 class EventList(generics.ListCreateAPIView):
 
-    # filter to first fake user until authentication is worked out
+    #  filter to first fake user until authentication is worked out ...................s
     queryset = Event.objects.filter(user=User.objects.all()[0])
     permission_classes = (permissions.AllowAny, )
 
@@ -66,7 +66,7 @@ class EventList(generics.ListCreateAPIView):
 
 class EventDetail(generics.RetrieveUpdateDestroyAPIView):
     # filter to first fake user until authentication is worked out
-    queryset = Event.objects.filter(user=User.objects.all()[0])
+    # queryset = Event.objects.filter(user=User.objects.all()[0])
     serializer_class = EventDetailSerializer
     permission_classes = (permissions.AllowAny, )
 
@@ -94,9 +94,9 @@ class NewEvent(generics.CreateAPIView):
 class AlertList(generics.ListCreateAPIView):
 
     # filter to first fake user until authentication is worked out
-    events = Event.objects.filter(user=User.objects.all()[0])
-    queryset = Alert.objects.filter(event__in=events).filter(
-        read_status=False).order_by('event__start')
+    # events = Event.objects.filter(user=User.objects.all()[0])
+    # queryset = Alert.objects.filter(event__in=events).filter(
+    #     read_status=False).order_by('event__start')
     permission_classes = (permissions.AllowAny, )
 
     serializer_class = AlertListSerializer
@@ -109,23 +109,23 @@ class AlertDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ProfileView(CreateAPIView):
-    #parser_classes = (FileUploadParser, MultiPartParser)
+    #parser_classes = (FileUploadParser, )
     serializer_class = UserProfileSerializer
 
+    #parser_class = (FileUploadParser, )
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = (permissions.AllowAny, )
+
     # serializer_class = NoteSerializer
 
-    parser_class = (MultiPartParser, FormParser)
+    # parser_class = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
-
         serializer = UserProfileSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -137,6 +137,38 @@ class ProfileView(CreateAPIView):
             data = []
 
         return Response(data=data)
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+
+        first_name = request.data.get('first_name', '')
+        last_name = request.data.get('last_name', '')
+        college = request.data.get('college', '')
+
+        profile_picture = request.data.get('profile_picture', None)
+
+        profile_ = Profile.objects.filter(username_id=request.user.id)
+
+        if first_name:
+            profile_.update(first_name=first_name)
+
+        if last_name:
+            profile_.update(last_name=last_name)
+
+        if college:
+            profile_.update(college=college)
+
+        if profile_picture:
+            user = Profile.objects.get(username_id=request.user.id)
+            file = UserProfileSerializer(
+                user, data={'profile_picture': profile_picture}, partial=True)
+            file.is_valid(raise_exception=True)
+            file.save()
+
+        queryset = Profile.objects.filter(username_id=request.user.id)
+        profile = UserProfileSerializer(queryset, many=True)
+
+        return Response(data=profile.data, status=status.HTTP_200_OK)
 
 
 # class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):

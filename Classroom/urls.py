@@ -16,15 +16,13 @@ from .views import (
     add_current_user_to_section,
     new_section,
     AlertList,
-    AlertDetail,
-    new_review,  #ProfileDetail 
+    AlertDetail,  #ProfileDetail 
 )
 
 urlpatterns = [
     path('register/', register),
     path('current_user/', current_user),
     path('current_user/reviews/all', all_reviews_by_user),
-    path('current_user/reviews/new', new_review),
     path('current_user/sections/all', get_sections_for_current_user),
     path('current_user/sections/<int:SectionID>/AddAStudent',
          add_current_user_to_section),
