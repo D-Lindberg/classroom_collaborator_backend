@@ -175,7 +175,7 @@ class SectionSerializer(object):
 class ClassMeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassMeeting
-        fields = ('__all__')
+        fields = ('class_section', 'date')
 
 
 class NoteSerializer(serializers.ModelSerializer):
