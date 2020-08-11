@@ -17,10 +17,17 @@ from .views import (
     AlertList,
     AlertDetail,
     new_review, 
-    get_professor, #ProfileDetail 
+    get_professor, #ProfileDetail,
+    SectionDetail,
+    SectionEventList,
     ClassMeetingList,
-    ClassMeetingDetail,
-    create_meeting
+    # ClassMeetingDetail,
+    create_meeting,
+    MeetingComments,
+    MeetingNotes,
+    UserMeetings,
+    NewComment,
+    NewNotes
 )
 
 urlpatterns = [
@@ -30,10 +37,14 @@ urlpatterns = [
     path('current_user/sections/all', get_sections_for_current_user),
     path('current_user/sections/<int:SectionID>/AddAStudent',
          add_current_user_to_section),
+    path('current_user/meetings', UserMeetings.as_view()),
     path('reviews/<ProfID>', all_reviews_by_professor),
     path('Professor/<ProfID>', get_professor),
     path('sections/new', new_section),
     path('sections/all', all_sections),
+    path('sections/<int:pk>', SectionDetail.as_view()),
+    path('sections/<int:pk>/events', SectionEventList.as_view()),
+    path('sections/<int:pk>/meetings', SectionEventList.as_view()),
     path('profile/', ProfileView.as_view()),
     # path('users/', UserList.as_view()),
     # path('profile/', ProfileDetail.as_view()),
@@ -43,7 +54,10 @@ urlpatterns = [
     path('alerts/', AlertList.as_view(), name='alert_list'),
     path('alerts/<int:pk>', AlertDetail.as_view(), name='alert_detail'),
     path('meetings/', ClassMeetingList.as_view()),
-    path('meetings/<int:pk>/', ClassMeetingDetail.as_view()),
+    path('meetings/<int:pk>/comments', MeetingComments.as_view()),
+    path('meetings/<int:pk>/notes', MeetingNotes.as_view()),
     path('meetings/new/', create_meeting),
+    path('comments/new', NewComment.as_view(), name='new_event'),
+    path('notes/new', NewNotes.as_view(), name='new_notes'),
     # path('profile/<int:pk>/', ProfileDetail.as_view()),
 ]

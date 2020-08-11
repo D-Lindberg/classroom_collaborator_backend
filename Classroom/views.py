@@ -71,11 +71,11 @@ class EventDetail(generics.RetrieveUpdateDestroyAPIView):
         return self.request.user.events.all()
 
     def perform_create(self, serializer):
-        serializer.save(self.request.user)
+        serializer.save(user=self.request.user)
         serializer.save()
 
     def perform_update(self, serializer):
-        serializer.save(self.request.user)
+        serializer.save(user=self.request.user)
         serializer.save()
 
 
@@ -89,6 +89,12 @@ class NewEvent(generics.CreateAPIView):
         alert = Alert(read_status=False, message='test', event=event)
         alert.save()
 
+class SectionEventList(generics.ListCreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
+    serializer_class = EventListSerializer
+    def get_queryset(self):
+        return Section.objects.get(id=self.kwargs['pk']).events.all()
+        
 
 class AlertList(generics.ListCreateAPIView):
     # permission_classes = (permissions.AllowAny,)
@@ -110,8 +116,15 @@ class AlertDetail(generics.RetrieveUpdateDestroyAPIView):
 class NewNotes(generics.CreateAPIView):
     # permission_classes = (permissions.AllowAny,)
     parser_classes = (MultiPartParser, FormParser)
-    serializer_class = NoteSerializer
+    serializer_class = NewNoteSerializer
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)
 
+class SectionDetail(generics.RetrieveAPIView):
+    # queryset = Section.objects.all()
+    serializer_class = SectionDetailSerializer
+    def get_queryset(self):
+        return self.request.user.sections.all()
 
 class ProfileView(CreateAPIView):
     #parser_classes = (FileUploadParser, )
@@ -316,14 +329,36 @@ class ClassMeetingList(generics.ListCreateAPIView):
     serializer_class = ClassMeetingSerializer
 
 
-class ClassMeetingDetail(generics.RetrieveUpdateDestroyAPIView):
+class MeetingComments(generics.ListCreateAPIView):
+    serializer_class = MeetingCommentSerializer
 
-    # filter to first fake user until authentication is worked out
-    queryset = ClassMeeting.objects.all()
-    permission_classes = (permissions.AllowAny,)
+    def get_queryset(self):
+        return ClassMeeting.objects.get(id=self.kwargs['pk']).comments.filter(parent_comment__isnull=True).order_by('time')
 
-    serializer_class = ClassMeetingSerializer
 
+class MeetingNotes(generics.ListCreateAPIView):
+    serializer_class = NoteSerializer
+
+    def get_queryset(self):
+        return ClassMeeting.objects.get(id=self.kwargs['pk']).notes.all().order_by('time')
+
+class NewComment(generics.CreateAPIView):
+    # permission_classes = (permissions.AllowAny,)
+    queryset = Comment.objects.all()
+    serializer_class = NewCommentSerializer
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)
+
+
+class UserMeetings(generics.ListAPIView):
+
+    serializer_class = UserMeetingsSerializer
+    def get_queryset(self):
+        sections = self.request.user.sections.all()
+        return ClassMeeting.objects.filter(class_section__in=sections)
+
+# class SectionMeetings(generics.ListAPIView):
+#     serializer_class = 
 
 @api_view(['POST'])
 def create_meeting(request):

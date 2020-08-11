@@ -17,13 +17,16 @@ def refreshDatabase():
     os.system('createdb ClassDB')
 
 def migrateDatabase():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'classroom_collaborator_backend.settings')
-    from django.core.management import execute_from_command_line
-    execute_from_command_line(['manage.py', 'makemigrations'])
-    execute_from_command_line(['manage.py', 'migrate'])
+    os.system('python manage.py makemigrations')
+    os.system('python manage.py migrate')
+
+
+def fillDatabase():
+    os.system('python manage.py shell < fakeData.py')
 
 
 if __name__ == "__main__":
     removeMigrationFiles()
     refreshDatabase()
     migrateDatabase()
+    fillDatabase()

@@ -3,6 +3,7 @@ from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 from .models import *
 from builtins import object
+from rest_framework_recursive.fields import RecursiveField
 
 
 class EventListSerializer(serializers.ModelSerializer):
@@ -45,6 +46,23 @@ class AlertDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alert
         fields = ('id', 'read_status')
+
+
+class RecursiveField(serializers.Serializer):
+    def to_representation(self, value):
+       serializer = self.parent.parent.__class__(value, context=self.context)
+       return serializer.data
+
+class MeetingCommentSerializer(serializers.ModelSerializer):
+    comments = RecursiveField(many=True, required=False)
+    username = serializers.SerializerMethodField('get_student_name')
+    
+    def get_student_name(self, obj):
+        return obj.student.username
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'content', 'student', 'comments', 'username', 'parent_comment')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -132,6 +150,7 @@ class SectionSerializer(object):
                 'Section': section.Section,
                 'Professor': section.Professor.last_name,
                 'ProfID': section.Professor.id,
+                'Name': section.Name,
                 # 'students': section.students.username,
             }
             output['sections'].append(section_detail)
@@ -161,15 +180,29 @@ class ClassMeetingSerializer(serializers.ModelSerializer):
 
 
 class NoteSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField('get_username')
+    
+    def get_username(self, obj):
+        return obj.student.username
+
     class Meta:
         model = Note
-        fields = ('__all__', )
+        fields = ('student', 'username', 'meeting', 'description', 'text', 'file')
 
+class NewNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = ('meeting', 'description', 'text', 'file')
 
-class CommentSerializer(serializers.ModelSerializer):
+class NewCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('__all__', )
+        fields = ('meeting', 'content', 'parent_comment')
+
+# class CommentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Comment
+#         fields = ('__all__', )
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -219,3 +252,30 @@ class AlertSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alert
         fields = ('__all__', )
+
+
+class SectionDetailSerializer(serializers.ModelSerializer):
+    professor_first_name = serializers.SerializerMethodField('get_professor_first_name')
+    professor_last_name = serializers.SerializerMethodField('get_professor_last_name')
+    meeting = serializers.SerializerMethodField('get_meeting')
+
+    def get_professor_first_name(self, obj):
+        return obj.Professor.first_name
+
+    def get_professor_last_name(self, obj):
+        return obj.Professor.last_name
+
+    def get_meeting(self, obj):
+        return obj.meetings.values('date', 'id')
+
+    class Meta:
+        model = Section
+        fields = ('id', 'Section', 'Name', 'professor_first_name', 'professor_last_name', 'meeting')
+
+    
+
+class UserMeetingsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ClassMeeting
+        fields = ('id',)
