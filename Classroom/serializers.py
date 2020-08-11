@@ -3,6 +3,7 @@ from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 from .models import *
 from builtins import object
+from rest_framework_recursive.fields import RecursiveField
 
 
 class EventListSerializer(serializers.ModelSerializer):
@@ -47,19 +48,44 @@ class AlertDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'read_status')
 
 
-class SubCommentSerializer(serializers.ModelSerializer):
+# class SubCommentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Comment
+#         fields = ('student', 'content')
+        
+
+class ReplyField(serializers.ModelSerializer):
+    comments = RecursiveField(allow_null=True)
     class Meta:
         model = Comment
-        fields = ('student', 'content')
+        fields = ('parent_comment', 'comments')
 
+class RecursiveField(serializers.Serializer):
+    def to_representation(self, value):
+       serializer = self.parent.parent.__class__(value, context=self.context)
+       return serializer.data
 
-class CommentSerializer(serializers.ModelSerializer):
-    subcomments = SubCommentSerializer()
+class MeetingCommentSerializer(serializers.ModelSerializer):
+    # parent_comment = RecursiveField(allow_null=True)
+    # comments = RecursiveField(allow_null=True)
+
+    # class Meta:
+    #     model = Comment
+    #     # fields = ('id', 'parent_comment', 'note', 'content')
+    #     fields = ('id', 'comments', 'note', 'content')
+
+    # reply_set = RecursiveSerializer(many=True, read_only=True)
+
+    # comments = ReplyField(many=True, read_only=True)
+    comments = RecursiveField(many=True, required=False)
+    username = serializers.SerializerMethodField('get_student_name')
+    
+    def get_student_name(self, obj):
+        return obj.student.username
 
     class Meta:
         model = Comment
-        # fields = ('student', 'content', 'subcomments')
-        fields = ('id', 'content')
+        fields = ('id', 'content', 'student', 'comments', 'username', 'parent_comment')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -176,10 +202,24 @@ class ClassMeetingSerializer(serializers.ModelSerializer):
 
 
 class NoteSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField('get_username')
+    
+    def get_username(self, obj):
+        return obj.student.username
+
     class Meta:
         model = Note
-        fields = ('__all__', )
+        fields = ('student', 'username', 'meeting', 'description', 'text', 'file')
 
+class NewNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = ('meeting', 'description', 'text', 'file')
+
+class NewCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('meeting', 'content', 'parent_comment')
 
 # class CommentSerializer(serializers.ModelSerializer):
 #     class Meta:
@@ -235,9 +275,11 @@ class AlertSerializer(serializers.ModelSerializer):
         model = Alert
         fields = ('__all__', )
 
+
 class SectionDetailSerializer(serializers.ModelSerializer):
     professor_first_name = serializers.SerializerMethodField('get_professor_first_name')
     professor_last_name = serializers.SerializerMethodField('get_professor_last_name')
+    meeting = serializers.SerializerMethodField('get_meeting')
 
     def get_professor_first_name(self, obj):
         return obj.Professor.first_name
@@ -245,6 +287,17 @@ class SectionDetailSerializer(serializers.ModelSerializer):
     def get_professor_last_name(self, obj):
         return obj.Professor.last_name
 
+    def get_meeting(self, obj):
+        return obj.meetings.values('date', 'id')
+
     class Meta:
         model = Section
-        fields = ('id', 'Section', 'Name', 'professor_first_name', 'professor_last_name')
+        fields = ('id', 'Section', 'Name', 'professor_first_name', 'professor_last_name', 'meeting')
+
+    
+
+class UserMeetingsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ClassMeeting
+        fields = ('id',)

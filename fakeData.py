@@ -63,16 +63,20 @@ n2 = note = Note(student=u2, meeting=m1, description='test image', file=File(f))
 n2.save()
 f.close()
 
-n3 = note = Note(student=u3, meeting=m1, description='test image', text='the sky is blue') 
+n3 = note = Note(student=u3, meeting=m1, description='test text', text='the sky is blue') 
 n3.save()
 
 #posts
-c1 = Comment(student=u3, content='is anyone having trouble with today\'s homework?')
-c2 = Comment(student=u2, content='no', parent_comment=c1)
-c3 = Comment(student=u1, content='thanks for sharing your notes', note=n1)
+c1 = Comment(student=u3, meeting=m1, content='is anyone having trouble with today\'s homework?')
+c2 = Comment(student=u2, meeting=m1, content='no', parent_comment=c1)
+c3 = Comment(student=u3, meeting=m1, content='I missed today\'s class, did I miss anything big?')
+c4 = Comment(student=u3, meeting=m1, content='yeah it sucks', parent_comment=c1)
+c5 = Comment(student=u2, meeting=m1, content='lol', parent_comment=c2)
 c1.save()
 c2.save()
 c3.save()
+c4.save()
+c5.save()
 
 #events
 e1 = Event(

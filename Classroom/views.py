@@ -90,7 +90,6 @@ class SectionEventList(generics.ListCreateAPIView):
     # permission_classes = (permissions.AllowAny,)
     serializer_class = EventListSerializer
     def get_queryset(self):
-        print('')
         return Section.objects.get(id=self.kwargs['pk']).events.all()
         
 
@@ -112,7 +111,9 @@ class AlertDetail(generics.RetrieveUpdateDestroyAPIView):
 class NewNotes(generics.CreateAPIView):
     # permission_classes = (permissions.AllowAny,)
     parser_classes = (MultiPartParser, FormParser)
-    serializer_class = NoteSerializer
+    serializer_class = NewNoteSerializer
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)
 
 class SectionDetail(generics.RetrieveAPIView):
     # queryset = Section.objects.all()
@@ -289,19 +290,37 @@ class ClassMeetingList(generics.ListCreateAPIView):
 
     serializer_class = ClassMeetingSerializer
 
-class CommentsList(generics.ListCreateAPIView):
 
-    # filter to first fake user until authentication is worked out
-    # queryset = ClassMeeting.objects.all()
+class MeetingComments(generics.ListCreateAPIView):
+    serializer_class = MeetingCommentSerializer
+
+    def get_queryset(self):
+        return ClassMeeting.objects.get(id=self.kwargs['pk']).comments.filter(parent_comment__isnull=True).order_by('time')
+
+
+class MeetingNotes(generics.ListCreateAPIView):
+    serializer_class = NoteSerializer
+
+    def get_queryset(self):
+        return ClassMeeting.objects.get(id=self.kwargs['pk']).notes.all().order_by('time')
+
+class NewComment(generics.CreateAPIView):
     # permission_classes = (permissions.AllowAny,)
     queryset = Comment.objects.all()
+    serializer_class = NewCommentSerializer
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)
 
-    serializer_class = CommentSerializer
-    # queryset = ClassMeeting.objects.all()
-    # permission_classes = (permissions.AllowAny,)
 
-    # serializer_class = ClassMeetingSerializer
+class UserMeetings(generics.ListAPIView):
 
+    serializer_class = UserMeetingsSerializer
+    def get_queryset(self):
+        sections = self.request.user.sections.all()
+        return ClassMeeting.objects.filter(class_section__in=sections)
+
+# class SectionMeetings(generics.ListAPIView):
+#     serializer_class = 
 
 @api_view(['POST'])
 def create_meeting(request):

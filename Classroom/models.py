@@ -42,13 +42,16 @@ class Note(models.Model):
     description = models.CharField(max_length=200)
     text = models.TextField(max_length=1000, blank=True, null=True)
     file = models.FileField(blank=False, null=True)
+    time = models.DateTimeField(default=timezone.now)
 
 
 class Comment(models.Model):
     content = models.TextField(max_length=500)
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    meeting = models.ForeignKey(ClassMeeting, on_delete=models.CASCADE, related_name='comments')
     note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='comments', blank=True, null=True)
-    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='comments')
+    time = models.DateTimeField(default=timezone.now)
 
 
 class Event(models.Model):
