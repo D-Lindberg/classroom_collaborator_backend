@@ -21,19 +21,24 @@ p1 = Professor(first_name='Paul', last_name ="Ronney")
 p1.save()
 p2 = Professor(first_name='Geoffrey', last_name ="Shiflett")
 p2.save()
+p3 = Professor(first_name='Rebecca', last_name ="Broyer")
+p3.save()
 
 #sections
-sec1 = Section(Section="28725R", Name='AME 301: Dynamics', Professor = p1, )
+sec1 = Section(Section="28725R", Name='AME 301: Dynamics', Professor = p1)
 sec1.save()
 sec1.students.add(u1)
 sec1.students.add(u2)
 sec1.save()
-sec2 = Section(Section="28726R", Name='AME 301: Dynamics', Professor = p2, )
+sec2 = Section(Section="28726R", Name='AME 301: Dynamics', Professor = p2)
 sec2.save()
-sec2.students.add(u1)
-sec2.students.add(u2)
 sec2.students.add(u3)
 sec2.save()
+sec3 = Section(Section="17204R", Name='CHEM 102: The Molecular World', Professor = p3)
+sec3.save()
+sec3.students.add(u1)
+sec3.students.add(u3)
+sec3.save()
 
 #reviews
 rev1 = Review(User = u1, class_section=sec1, description="I feel a deep hatred for mr professorson and for this class", Professor=p1)
@@ -51,28 +56,33 @@ m3.save()
 
 
 #notes
-path = os.path.join(os.getcwd(), 'media_root/Jason_Pul_Resume.pdf')
-f = open(path, 'rb')
-n1 = note = Note(student=u1, meeting=m1, description='test pdf', file=File(f))
+txt1 = '''Your skeletal system's cells are constantly regenerating and, on average, the bones you have now will have completely regenerated in about a decade's time. This does start to slow down as you age, however, with regeneration taking longer, causing bones to naturally become thinner. And if you want plenty of good years to look forward to, check out these 100 Ways to Live to 100.
+'''
+
+txt2 = '''It might seem like a tall tale, but when you wake up in the morning, you're actually a tiny bit taller than you were when you went to bed. This is due to the pressure put on joints throughout the day. As you go about your activities, this pressure causes the cartilage in your spine to compress—just fractions of an inch, but enough to push everything down. As you relax in your sleep, it eases the pressure on your spinal disks, thus allowing you to return to your full height
+'''
+
+txt3 = '''As the temperature shoots up, so do kids. While you might imagine that growth happens in a steady, gradual way, Joseph Gigante, MD, associate professor of pediatrics at Vanderbilt Children's Hospital in Nashville, tells CNN that, like much else in the natural world, growth spurts can be seasonal: "Although we don't have a good explanation for it, children seem to grow fastest in the summer and slowest in the fall." And for more great information delivered to your inbox, sign up for our daily newsletter.
+'''
+
+n1 = note = Note(student=u1, meeting=m1, description='test text', text=txt1) 
+n2 = note = Note(student=u2, meeting=m1, description='test text', text=txt2) 
+n3 = note = Note(student=u3, meeting=m1, description='test text', text=txt3) 
 n1.save()
-f.close()
-
-path = os.path.join(os.getcwd(), 'media_root/notespr.jpg')
-f = open(path, 'rb')
-n2 = note = Note(student=u2, meeting=m1, description='test image', file=File(f)) 
 n2.save()
-f.close()
-
-n3 = note = Note(student=u3, meeting=m1, description='test image', text='the sky is blue') 
 n3.save()
 
 #posts
-c1 = Comment(student=u3, content='is anyone having trouble with today\'s homework?')
-c2 = Comment(student=u2, content='no', parent_comment=c1)
-c3 = Comment(student=u1, content='thanks for sharing your notes', note=n1)
+c1 = Comment(student=u3, meeting=m1, content='is anyone having trouble with today\'s homework?')
+c2 = Comment(student=u2, meeting=m1, content='no', parent_comment=c1)
+c3 = Comment(student=u3, meeting=m1, content='I missed today\'s class, did I miss anything big?')
+c4 = Comment(student=u3, meeting=m1, content='yeah it sucks', parent_comment=c1)
+c5 = Comment(student=u2, meeting=m1, content='lol', parent_comment=c2)
 c1.save()
 c2.save()
 c3.save()
+c4.save()
+c5.save()
 
 #events
 e1 = Event(
@@ -109,7 +119,7 @@ e3 = Event(
 e3.save()
 
 e4 = Event(
-    title='final project',
+    title='final project due',
     description='final project due',
     start=timezone.make_aware(timezone.datetime(2020, 8, 14, 12, 0)),
     end=timezone.make_aware(timezone.datetime(2020, 8, 14, 12, 0)),
