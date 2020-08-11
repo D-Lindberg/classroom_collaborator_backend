@@ -172,7 +172,7 @@ class SectionSerializer(object):
 class ClassMeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassMeeting
-        fields = ('__all__', )
+        fields = ('__all__')
 
 
 class NoteSerializer(serializers.ModelSerializer):

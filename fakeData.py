@@ -119,12 +119,25 @@ e4 = Event(
     )
 e4.save()
 
+e5 = Event(
+    title='final project',
+    description='final project due',
+    start=timezone.make_aware(timezone.datetime(2020, 8, 30, 12, 0)),
+    end=timezone.make_aware(timezone.datetime(2020, 8, 30, 12, 0)),
+    location='SAL 101',
+    viewable=True,
+    class_section=sec2
+    )
+e5.save()
+
 #alerts
 a1 = Alert(message='', event=e1)
 a2 = Alert(message='', event=e2)
 a3 = Alert(message='', event=e3)
 a4 = Alert(message='', event=e4)
+a5 = Alert(message='', event=e5)
 a1.save()
 a2.save()
 a3.save()
 a4.save()
+a5.save()
