@@ -39,7 +39,7 @@ urlpatterns = [
          add_current_user_to_section),
     path('current_user/meetings', UserMeetings.as_view()),
     path('reviews/<ProfID>', all_reviews_by_professor),
-    # path('<ProfID>', get_professor),
+    path('Professor/<ProfID>', get_professor),
     path('sections/new', new_section),
     path('sections/all', all_sections),
     path('sections/<int:pk>', SectionDetail.as_view()),

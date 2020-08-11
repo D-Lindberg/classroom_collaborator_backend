@@ -16,11 +16,12 @@ class Profile(models.Model):
 
 
 class Professor(models.Model):
-    first_name = models.CharField(max_length=50)
+    #First name being optional makes it easier to create a new section.
+    first_name = models.CharField(max_length=50, blank=True, default='')
     last_name = models.CharField(max_length=50)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.last_name}'
 
 
 class Section(models.Model):
