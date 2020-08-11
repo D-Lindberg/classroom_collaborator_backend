@@ -48,35 +48,12 @@ class AlertDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'read_status')
 
 
-# class SubCommentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Comment
-#         fields = ('student', 'content')
-        
-
-class ReplyField(serializers.ModelSerializer):
-    comments = RecursiveField(allow_null=True)
-    class Meta:
-        model = Comment
-        fields = ('parent_comment', 'comments')
-
 class RecursiveField(serializers.Serializer):
     def to_representation(self, value):
        serializer = self.parent.parent.__class__(value, context=self.context)
        return serializer.data
 
 class MeetingCommentSerializer(serializers.ModelSerializer):
-    # parent_comment = RecursiveField(allow_null=True)
-    # comments = RecursiveField(allow_null=True)
-
-    # class Meta:
-    #     model = Comment
-    #     # fields = ('id', 'parent_comment', 'note', 'content')
-    #     fields = ('id', 'comments', 'note', 'content')
-
-    # reply_set = RecursiveSerializer(many=True, read_only=True)
-
-    # comments = ReplyField(many=True, read_only=True)
     comments = RecursiveField(many=True, required=False)
     username = serializers.SerializerMethodField('get_student_name')
     
@@ -173,6 +150,7 @@ class SectionSerializer(object):
                 'Section': section.Section,
                 'Professor': section.Professor.last_name,
                 'ProfID': section.Professor.id,
+                'Name': section.Name,
                 # 'students': section.students.username,
             }
             output['sections'].append(section_detail)
