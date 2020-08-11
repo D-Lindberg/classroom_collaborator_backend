@@ -22,18 +22,20 @@ from .views import (
     SectionEventList,
     ClassMeetingList,
     # ClassMeetingDetail,
-    create_meeting,
+    # create_meeting,
     MeetingComments,
     MeetingNotes,
     UserMeetings,
     NewComment,
-    NewNotes
+    NewNotes,
+    CreateMeeting,
 )
 
 urlpatterns = [
     path('register/', register),
     path('current_user/', current_user),
     path('current_user/reviews/all', all_reviews_by_user),
+    path('current_user/reviews/new', new_review),
     path('current_user/sections/all', get_sections_for_current_user),
     path('current_user/sections/<int:SectionID>/AddAStudent',
          add_current_user_to_section),
@@ -56,7 +58,7 @@ urlpatterns = [
     path('meetings/', ClassMeetingList.as_view()),
     path('meetings/<int:pk>/comments', MeetingComments.as_view()),
     path('meetings/<int:pk>/notes', MeetingNotes.as_view()),
-    path('meetings/new/', create_meeting),
+    path('meetings/new', CreateMeeting.as_view()),
     path('comments/new', NewComment.as_view(), name='new_event'),
     path('notes/new', NewNotes.as_view(), name='new_notes'),
     # path('profile/<int:pk>/', ProfileDetail.as_view()),

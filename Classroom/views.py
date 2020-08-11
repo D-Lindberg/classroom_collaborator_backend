@@ -94,6 +94,9 @@ class SectionEventList(generics.ListCreateAPIView):
     serializer_class = EventListSerializer
     def get_queryset(self):
         return Section.objects.get(id=self.kwargs['pk']).events.all()
+
+    def perform_create(self, serializer):
+        serializer.save(class_section=Section.objects.get(id=self.kwargs['pk']))
         
 
 class AlertList(generics.ListCreateAPIView):
@@ -357,17 +360,10 @@ class UserMeetings(generics.ListAPIView):
         sections = self.request.user.sections.all()
         return ClassMeeting.objects.filter(class_section__in=sections)
 
-# class SectionMeetings(generics.ListAPIView):
-#     serializer_class = 
 
-@api_view(['POST'])
-def create_meeting(request):
-    serializer = ClassMeetingSerializer(data=request.data)
-    if serializer.is_valid():
-        class_meeting = serializer.save()
-    return Response(serializer.data)
-
-# extra?
+class CreateMeeting(generics.CreateAPIView):
+    queryset = ClassMeeting.objects.all()
+    serializer_class = ClassMeetingSerializer
 
 
 @api_view(['DELETE'])

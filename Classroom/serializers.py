@@ -3,7 +3,6 @@ from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
 from .models import *
 from builtins import object
-from rest_framework_recursive.fields import RecursiveField
 
 
 class EventListSerializer(serializers.ModelSerializer):
@@ -176,7 +175,7 @@ class SectionSerializer(object):
 class ClassMeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassMeeting
-        fields = ('__all__')
+        fields = ('class_section', 'date')
 
 
 class NoteSerializer(serializers.ModelSerializer):
