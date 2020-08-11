@@ -13,6 +13,7 @@ from .serializers import *
 from .models import *
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated, AllowAny
+import ipdb; 
 
 
 
@@ -285,11 +286,18 @@ def new_review(request):
                 #description from the body of the post request
                 description = request.data["description"]
                 #professor info through the same process as section
-                reviewed_professor = Professor.objects.get(section=sectionID)
+                reviewed_professor = Professor.objects.get(sections=sectionID)
+                
                 #create the new review object which records it in the database
                 new_review = Review.objects.create( User=current_user,class_section=reviewed_section, description=description, Professor=reviewed_professor)
-                #this return is purely aesthetic. You can use the console-network-click the name of the request to see what the new review object looks like
-                return HttpResponse(new_review)
+
+                all_reviews_by_user = Review.objects.filter(User=current_user)
+
+                # #Serialize the queryset all_reviews
+                serialized_revs = ReviewSerializer(all_reviews_by_user).all_reviews
+                # convert Serialized object to json
+                print(Response(serialized_revs))
+                return Response(serialized_revs)
 
 #Michael Needs this for review creation on the front end
 

@@ -27,7 +27,7 @@ class Professor(models.Model):
 class Section(models.Model):
 
     Section = models.CharField(max_length=255)
-    Name = models.CharField(max_length=255)
+    Name = models.CharField(max_length=255, blank=True, null=True)
     Professor = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='sections')
     students = models.ManyToManyField(User, related_name='sections')
 
