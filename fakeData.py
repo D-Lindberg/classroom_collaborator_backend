@@ -6,13 +6,13 @@ import os
 
 
 #users
-u1 = User(username='john', email='john@gmail.com')
+u1 = User(username='John', email='john@gmail.com')
 u1.set_password('11')
 u1.save()
-u2 = User(username='sarah', email='sarah@gmail.com')
+u2 = User(username='Sarah', email='sarah@gmail.com')
 u2.set_password('11')
 u2.save()
-u3 = User(username='mike', email='sarah@gmail.com')
+u3 = User(username='Mike', email='sarah@gmail.com')
 u3.set_password('11')
 u3.save()
 
@@ -41,8 +41,8 @@ sec3.students.add(u3)
 sec3.save()
 
 #reviews
-rev1 = Review(User = u1, class_section=sec1, description="I feel a deep hatred for mr professorson and for this class", Professor=p1)
-rev2 = Review(User = u2, class_section=sec1, description="I also feel a deep hatred for mr professorson and for his class", Professor=p1)
+rev1 = Review(User = u1, class_section=sec1, description="I really enjoyed this class. Professor Ronney gives a lot of homework, but his study guides make the tests easy if you put in the work", Professor=p1)
+rev2 = Review(User = u2, class_section=sec1, description="I didn't like this class. There were at least 4 hours of homework a week along with mandatory reading from the text", Professor=p1)
 rev1.save()
 rev2.save()
 
