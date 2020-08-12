@@ -248,14 +248,14 @@ def new_section(request):
         if request.method == "POST":
                 #request.data is a json object from which we can access information to build a new section object
                 section_title = request.data["Section"]
-
+                section_name = request.data["SectionName"]
                 professor = request.data["ProfessorLastName"]
                 #If the Professor doesn't exist, create a new one
                 Professor.objects.get_or_create(last_name=professor)
                 #now get that professor
                 ProfessorObject = Professor.objects.get(last_name=professor)
                 #create the new review object which records it in the database
-                new_Section = Section.objects.create(Section=section_title,Professor=ProfessorObject)
+                new_Section = Section.objects.create(Section=section_title, Name=section_name, Professor=ProfessorObject)
 
 
                 #Now add the current user to the class section
